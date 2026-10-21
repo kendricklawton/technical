@@ -125,7 +125,7 @@ An organization operates an Auto Scaling Group containing a mixture of On-Demand
 3. Terminating instances running the oldest launch template version.
 
 **Which combination of ASG configurations satisfies these requirements?**
-- A. Enable **Instance Scale-In Protection** on the instances processing long-running jobs. Set the ASG **Termination Policy** to `AllocationStrategy` $\rightarrow$ `OldestLaunchTemplate` $\rightarrow$ `Default`.
+- A. Enable **Instance Scale-In Protection** on the instances processing long-running jobs. Set the ASG **Termination Policy** to `AllocationStrategy` > `OldestLaunchTemplate` > `Default`.
 - B. Set the ASG termination policy to `NewestInstance`.
 - C. Terminate instances manually via the AWS CLI.
 - D. Remove the instances from the ASG and place them in a standalone security group.

@@ -8,9 +8,9 @@ This directory contains three full-length, scenario-based practice examinations 
 
 | Exam | Question Count | Recommended Time Limit | Passing Target | Link |
 | :--- | :---: | :---: | :---: | :--- |
-| **Practice Exam 1** | 25 Questions | **60 Minutes** (2.4 min/question) | **$\ge 20 / 25$ (80%)** | [**Open `Practice_Exam_1.md`**](file:///home/k-henry/repos/technical/AWS_Solutions_Architect_Pro/Practice_Exams/Practice_Exam_1.md) |
-| **Practice Exam 2** | 25 Questions | **60 Minutes** (2.4 min/question) | **$\ge 20 / 25$ (80%)** | [**Open `Practice_Exam_2.md`**](file:///home/k-henry/repos/technical/AWS_Solutions_Architect_Pro/Practice_Exams/Practice_Exam_2.md) |
-| **Practice Exam 3** | 25 Questions | **60 Minutes** (2.4 min/question) | **$\ge 20 / 25$ (80%)** | [**Open `Practice_Exam_3.md`**](file:///home/k-henry/repos/technical/AWS_Solutions_Architect_Pro/Practice_Exams/Practice_Exam_3.md) |
+| **Practice Exam 1** | 25 Questions | **60 Minutes** (2.4 min/question) | **$\ge 20 / 25$ (80%)** | [**Open `Practice_Exam_1.md`**](Practice_Exam_1.md) |
+| **Practice Exam 2** | 25 Questions | **60 Minutes** (2.4 min/question) | **$\ge 20 / 25$ (80%)** | [**Open `Practice_Exam_2.md`**](Practice_Exam_2.md) |
+| **Practice Exam 3** | 25 Questions | **60 Minutes** (2.4 min/question) | **$\ge 20 / 25$ (80%)** | [**Open `Practice_Exam_3.md`**](Practice_Exam_3.md) |
 | **Combined 75-Question Simulation** | **75 Questions** | **180 Minutes (3 Hours)** | **$\ge 58 / 75$ (77%+)** | Take Exams 1, 2, and 3 back-to-back |
 
 ---
@@ -35,8 +35,8 @@ Each 25-question practice exam is balanced to reflect the official `SAP-C02` blu
 2. **Score Multi-Response Questions Strictly**: On the actual AWS `SAP-C02` exam, "Choose TWO" or "Choose THREE" questions award **zero partial credit**—you must select all correct letters to earn the point. Score yourself the same way.
 3. **Audit Why Every Distractor Fails**: Even when you get a question right, read the full distractor breakdown inside the explanation block. On `SAP-C02`, knowing *why* an option is a subtle trap (e.g., S3 Object Lock Governance vs. Compliance mode, Direct Connect Public VIF vs. Transit VIF, or CloudFront Functions vs. Lambda@Edge body access) is what separates a 720 from an 850+.
 4. **Cross-Reference Weak Domains**:
-   * Missed questions in **Domain 1** $\rightarrow$ Review [Domain 1 Study Guide](file:///home/k-henry/repos/technical/AWS_Solutions_Architect_Pro/Domain_1_Organizational_Complexity/Study_Guide.md) & [Exercises](file:///home/k-henry/repos/technical/AWS_Solutions_Architect_Pro/Domain_1_Organizational_Complexity/Exercises.md)
-   * Missed questions in **Domain 2** $\rightarrow$ Review [Domain 2 Study Guide](file:///home/k-henry/repos/technical/AWS_Solutions_Architect_Pro/Domain_2_Design_New_Solutions/Study_Guide.md) & [Exercises](file:///home/k-henry/repos/technical/AWS_Solutions_Architect_Pro/Domain_2_Design_New_Solutions/Exercises.md)
-   * Missed questions in **Domain 3** $\rightarrow$ Review [Domain 3 Study Guide](file:///home/k-henry/repos/technical/AWS_Solutions_Architect_Pro/Domain_3_Continuous_Improvement/Study_Guide.md) & [Exercises](file:///home/k-henry/repos/technical/AWS_Solutions_Architect_Pro/Domain_3_Continuous_Improvement/Exercises.md)
-   * Missed questions in **Domain 4** $\rightarrow$ Review [Domain 4 Study Guide](file:///home/k-henry/repos/technical/AWS_Solutions_Architect_Pro/Domain_4_Migration_Modernization/Study_Guide.md) & [Exercises](file:///home/k-henry/repos/technical/AWS_Solutions_Architect_Pro/Domain_4_Migration_Modernization/Exercises.md)
-   * Review rapid decision tables in the [SAP-C02 Master Cheat Sheet](file:///home/k-henry/repos/technical/AWS_Solutions_Architect_Pro/SAP_C02_Master_Cheat_Sheet.md).
+   * Missed questions in **Domain 1** > Review [Domain 1 Study Guide](../Domain_1_Organizational_Complexity/Study_Guide.md) & [Exercises](../Domain_1_Organizational_Complexity/Exercises.md)
+   * Missed questions in **Domain 2** > Review [Domain 2 Study Guide](../Domain_2_Design_New_Solutions/Study_Guide.md) & [Exercises](../Domain_2_Design_New_Solutions/Exercises.md)
+   * Missed questions in **Domain 3** > Review [Domain 3 Study Guide](../Domain_3_Continuous_Improvement/Study_Guide.md) & [Exercises](../Domain_3_Continuous_Improvement/Exercises.md)
+   * Missed questions in **Domain 4** > Review [Domain 4 Study Guide](../Domain_4_Migration_Modernization/Study_Guide.md) & [Exercises](../Domain_4_Migration_Modernization/Exercises.md)
+   * Review rapid decision tables in the [SAP-C02 Master Cheat Sheet](../SAP_C02_Master_Cheat_Sheet.md).

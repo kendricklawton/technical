@@ -26,10 +26,10 @@ During pipeline execution, the deployment stage in Account `B` fails with an `Ac
 An application running on an Auto Scaling Group of Amazon EC2 instances behind an Application Load Balancer is updated using AWS CodeDeploy with an `In-Place` deployment configuration (`CodeDeployDefault.OneAtATime`). During deployment, the application process must gracefully finish processing active HTTP transactions, terminate cleanly, install the new version, verify local process health, and then resume receiving ALB traffic.
 
 **What is the correct chronological sequence of CodeDeploy lifecycle event hooks for this in-place deployment?**
-- A. `BeforeBlockTraffic` $\rightarrow$ `BlockTraffic` $\rightarrow$ `AfterBlockTraffic` $\rightarrow$ `ApplicationStop` $\rightarrow$ `DownloadBundle` $\rightarrow$ `BeforeInstall` $\rightarrow$ `Install` $\rightarrow$ `AfterInstall` $\rightarrow$ `ApplicationStart` $\rightarrow$ `ValidateService` $\rightarrow$ `BeforeAllowTraffic` $\rightarrow$ `AllowTraffic` $\rightarrow$ `AfterAllowTraffic`
-- B. `ApplicationStop` $\rightarrow$ `BeforeBlockTraffic` $\rightarrow$ `BlockTraffic` $\rightarrow$ `DownloadBundle` $\rightarrow$ `Install` $\rightarrow$ `ApplicationStart` $\rightarrow$ `ValidateService` $\rightarrow$ `AllowTraffic`
-- C. `BeforeInstall` $\rightarrow$ `Install` $\rightarrow$ `AfterInstall` $\rightarrow$ `ApplicationStart` $\rightarrow$ `ValidateService` $\rightarrow$ `BeforeBlockTraffic` $\rightarrow$ `BlockTraffic` $\rightarrow$ `AllowTraffic`
-- D. `BlockTraffic` $\rightarrow$ `ApplicationStop` $\rightarrow$ `DownloadBundle` $\rightarrow$ `Install` $\rightarrow$ `ValidateService` $\rightarrow$ `ApplicationStart` $\rightarrow$ `AllowTraffic`
+- A. `BeforeBlockTraffic` > `BlockTraffic` > `AfterBlockTraffic` > `ApplicationStop` > `DownloadBundle` > `BeforeInstall` > `Install` > `AfterInstall` > `ApplicationStart` > `ValidateService` > `BeforeAllowTraffic` > `AllowTraffic` > `AfterAllowTraffic`
+- B. `ApplicationStop` > `BeforeBlockTraffic` > `BlockTraffic` > `DownloadBundle` > `Install` > `ApplicationStart` > `ValidateService` > `AllowTraffic`
+- C. `BeforeInstall` > `Install` > `AfterInstall` > `ApplicationStart` > `ValidateService` > `BeforeBlockTraffic` > `BlockTraffic` > `AllowTraffic`
+- D. `BlockTraffic` > `ApplicationStop` > `DownloadBundle` > `Install` > `ValidateService` > `ApplicationStart` > `AllowTraffic`
 
 ---
 
@@ -208,7 +208,7 @@ When artifacts are passed cross-account in AWS CodePipeline, default AWS-managed
 
 **Answer:** A  
 **Explanation:** 
-When an instance is registered to an ALB/ELB target group, CodeDeploy executes traffic deregistration hooks first: `BeforeBlockTraffic` $\rightarrow$ `BlockTraffic` $\rightarrow$ `AfterBlockTraffic`. Once the ALB deregistration delay completes and no new traffic reaches the instance, CodeDeploy runs the host-level lifecycle: `ApplicationStop` (running scripts from the *previous* bundle) $\rightarrow$ `DownloadBundle` $\rightarrow$ `BeforeInstall` $\rightarrow$ `Install` $\rightarrow$ `AfterInstall` $\rightarrow$ `ApplicationStart` $\rightarrow$ `ValidateService`. Finally, it executes traffic registration hooks: `BeforeAllowTraffic` $\rightarrow$ `AllowTraffic` $\rightarrow$ `AfterAllowTraffic`.
+When an instance is registered to an ALB/ELB target group, CodeDeploy executes traffic deregistration hooks first: `BeforeBlockTraffic` > `BlockTraffic` > `AfterBlockTraffic`. Once the ALB deregistration delay completes and no new traffic reaches the instance, CodeDeploy runs the host-level lifecycle: `ApplicationStop` (running scripts from the *previous* bundle) > `DownloadBundle` > `BeforeInstall` > `Install` > `AfterInstall` > `ApplicationStart` > `ValidateService`. Finally, it executes traffic registration hooks: `BeforeAllowTraffic` > `AllowTraffic` > `AfterAllowTraffic`.
 
 ---
 

@@ -83,7 +83,7 @@ A junior engineer updates the database connection pool limit in Parameter Store 
 
 **How does Parameter Store support version history and rollback?**
 - A. Parameter Store does not store past versions; a backup must be restored from S3.
-- B. Parameter Store **automatically increments the version number** on every update (e.g. Version 1 $\rightarrow$ Version 2). The team can inspect past versions using `GetParameterHistory` and update the parameter value back to Version 1's value (creating Version 3 with the restored content).
+- B. Parameter Store **automatically increments the version number** on every update (e.g. Version 1 > Version 2). The team can inspect past versions using `GetParameterHistory` and update the parameter value back to Version 1's value (creating Version 3 with the restored content).
 - C. Run `git revert` on Parameter Store.
 - D. The database must be restarted.
 
@@ -192,4 +192,3 @@ Every modification to an SSM parameter creates a new immutable version number (1
 **Explanation:** CloudFormation Custom Resources expect a signed JSON payload uploaded to the pre-signed S3 `ResponseURL`. If the Lambda function crashes or exits without sending this signal, CloudFormation waits 1 hour before timing out.
 
 ---
-

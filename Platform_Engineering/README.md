@@ -9,6 +9,20 @@ A comprehensive, self-contained study program and interview preparation master w
 
 ---
 
+## Staff SRE & Platform Engineering Production Hub
+
+For senior and staff engineers targeting high-leverage roles, deep systems diagnostics, and executive technical leadership, reference these production resources:
+
+| Production Resource | Focus & Deliverable | Primary Scope |
+| :--- | :--- | :--- |
+| **[Staff SRE Production Playbook](Staff_Track/Staff_SRE_Playbook.md)** | Linux memory/OOM triage, CFS CPU quota throttling, TCP socket buffers/BDP tuning, `bpftrace` eBPF one-liners, and Google SRE Multi-Window Multi-Burn-Rate (MWMBR) Prometheus alerting rules | Systems Performance & SRE |
+| **[Incident War Room Postmortems](Incident_War_Room_Postmortems.md)** | 5 comprehensive SEV-1 production incident post-mortems (Conntrack table exhaustion, etcd disk fsync starvation, CFS CPU quota throttling, DB thundering herd retry storms, BGP asymmetric routing) | Incident Command & Reliability |
+| **[Architecture Decision Records (ADRs)](Architecture_Decision_Records.md)** | 5 enterprise ADRs (Internal Developer Portal, Kubernetes Multi-Tenancy vCluster vs Mega-Clusters, Crossplane vs OpenTofu, Gateway API vs Istio vs Lattice, OpenTelemetry Tail-Based Sampling vs Direct Agent Ingestion) | Technical Strategy & Governance |
+| **[Staff Track (3-Year Career Plan)](Staff_Track/README.md)** | Multi-team scope, evidence log, staff drills, distributed systems reading list, and quarterly reviews | Leadership & Career |
+| **[Master Cheat Sheet](PE_Master_Cheat_Sheet.md)** | Consolidated quick-reference across all 10 domains, CLI commands, and architectural trade-offs | Rapid Review |
+
+---
+
 ## The Platform Engineer Interview Loop
 
 Loops vary by company, but most platform/infrastructure loops are built from the rounds below. Each round has a matching mock in [`Mock_Interviews/`](Mock_Interviews/README.md).
@@ -56,23 +70,24 @@ flowchart LR
 
 ### Quick Navigation Matrix
 
-| Domain | Study Guide | Labs / Drills | Quiz 1 | Quiz 2 | Quiz 3 | Interview Bank |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **1. Platform Foundations & IDPs** | [Study Guide](Domain_1_Platform_Foundations_IDP/Study_Guide.md) | [Labs](Domain_1_Platform_Foundations_IDP/Exercises.md) | [Quiz 1](Domain_1_Platform_Foundations_IDP/Quiz_1.md) | [Quiz 2](Domain_1_Platform_Foundations_IDP/Quiz_2.md) | [Quiz 3](Domain_1_Platform_Foundations_IDP/Quiz_3.md) | [25 Questions](Domain_1_Platform_Foundations_IDP/Interview_Questions.md) |
-| **2. Linux, Networking & Systems** | [Study Guide](Domain_2_Linux_Networking_Fundamentals/Study_Guide.md) | [Labs](Domain_2_Linux_Networking_Fundamentals/Exercises.md) | [Quiz 1](Domain_2_Linux_Networking_Fundamentals/Quiz_1.md) | [Quiz 2](Domain_2_Linux_Networking_Fundamentals/Quiz_2.md) | [Quiz 3](Domain_2_Linux_Networking_Fundamentals/Quiz_3.md) | [25 Questions](Domain_2_Linux_Networking_Fundamentals/Interview_Questions.md) |
-| **3. Kubernetes Platform Eng.** | [Study Guide](Domain_3_Kubernetes_Platform_Engineering/Study_Guide.md) | [Labs](Domain_3_Kubernetes_Platform_Engineering/Exercises.md) | [Quiz 1](Domain_3_Kubernetes_Platform_Engineering/Quiz_1.md) | [Quiz 2](Domain_3_Kubernetes_Platform_Engineering/Quiz_2.md) | [Quiz 3](Domain_3_Kubernetes_Platform_Engineering/Quiz_3.md) | [25 Questions](Domain_3_Kubernetes_Platform_Engineering/Interview_Questions.md) |
-| **4. Infrastructure as Code** | [Study Guide](Domain_4_Infrastructure_as_Code/Study_Guide.md) | [Labs](Domain_4_Infrastructure_as_Code/Exercises.md) | [Quiz 1](Domain_4_Infrastructure_as_Code/Quiz_1.md) | [Quiz 2](Domain_4_Infrastructure_as_Code/Quiz_2.md) | [Quiz 3](Domain_4_Infrastructure_as_Code/Quiz_3.md) | [25 Questions](Domain_4_Infrastructure_as_Code/Interview_Questions.md) |
-| **5. CI/CD, GitOps & Delivery** | [Study Guide](Domain_5_CICD_GitOps_Delivery/Study_Guide.md) | [Labs](Domain_5_CICD_GitOps_Delivery/Exercises.md) | [Quiz 1](Domain_5_CICD_GitOps_Delivery/Quiz_1.md) | [Quiz 2](Domain_5_CICD_GitOps_Delivery/Quiz_2.md) | [Quiz 3](Domain_5_CICD_GitOps_Delivery/Quiz_3.md) | [25 Questions](Domain_5_CICD_GitOps_Delivery/Interview_Questions.md) |
-| **6. Observability & SRE** | [Study Guide](Domain_6_Observability_SRE/Study_Guide.md) | [Labs](Domain_6_Observability_SRE/Exercises.md) | [Quiz 1](Domain_6_Observability_SRE/Quiz_1.md) | [Quiz 2](Domain_6_Observability_SRE/Quiz_2.md) | [Quiz 3](Domain_6_Observability_SRE/Quiz_3.md) | [25 Questions](Domain_6_Observability_SRE/Interview_Questions.md) |
-| **7. Security, Governance & FinOps** | [Study Guide](Domain_7_Security_Governance_FinOps/Study_Guide.md) | [Labs](Domain_7_Security_Governance_FinOps/Exercises.md) | [Quiz 1](Domain_7_Security_Governance_FinOps/Quiz_1.md) | [Quiz 2](Domain_7_Security_Governance_FinOps/Quiz_2.md) | [Quiz 3](Domain_7_Security_Governance_FinOps/Quiz_3.md) | [25 Questions](Domain_7_Security_Governance_FinOps/Interview_Questions.md) |
-| **8. System Design** | [Study Guide](Domain_8_System_Design/Study_Guide.md) | [Design Drills](Domain_8_System_Design/Exercises.md) | [Quiz 1](Domain_8_System_Design/Quiz_1.md) | [Quiz 2](Domain_8_System_Design/Quiz_2.md) | [Quiz 3](Domain_8_System_Design/Quiz_3.md) | [25 Questions](Domain_8_System_Design/Interview_Questions.md) |
-| **9. Coding & Automation** | [Study Guide](Domain_9_Coding_Automation/Study_Guide.md) | [Coding Problems](Domain_9_Coding_Automation/Exercises.md) | [Quiz 1](Domain_9_Coding_Automation/Quiz_1.md) | [Quiz 2](Domain_9_Coding_Automation/Quiz_2.md) | [Quiz 3](Domain_9_Coding_Automation/Quiz_3.md) | [25 Questions](Domain_9_Coding_Automation/Interview_Questions.md) |
-| **10. Behavioral & Career** | [Study Guide](Domain_10_Behavioral_Career/Study_Guide.md) | [Workbook](Domain_10_Behavioral_Career/Exercises.md) | [Quiz 1](Domain_10_Behavioral_Career/Quiz_1.md) | [Quiz 2](Domain_10_Behavioral_Career/Quiz_2.md) | [Quiz 3](Domain_10_Behavioral_Career/Quiz_3.md) | [25 Questions](Domain_10_Behavioral_Career/Interview_Questions.md) |
+| Domain | Study Guide | White Papers & Docs | Labs / Drills | Quiz 1 | Quiz 2 | Quiz 3 | Interview Bank |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **1. Platform Foundations & IDPs** | [Study Guide](Domain_1_Platform_Foundations_IDP/Study_Guide.md) | [White Papers & Docs](Domain_1_Platform_Foundations_IDP/White_Papers.md) | [Labs](Domain_1_Platform_Foundations_IDP/Exercises.md) | [Quiz 1](Domain_1_Platform_Foundations_IDP/Quiz_1.md) | [Quiz 2](Domain_1_Platform_Foundations_IDP/Quiz_2.md) | [Quiz 3](Domain_1_Platform_Foundations_IDP/Quiz_3.md) | [25 Questions](Domain_1_Platform_Foundations_IDP/Interview_Questions.md) |
+| **2. Linux, Networking & Systems** | [Study Guide](Domain_2_Linux_Networking_Fundamentals/Study_Guide.md) | [White Papers & Docs](Domain_2_Linux_Networking_Fundamentals/White_Papers.md) | [Labs](Domain_2_Linux_Networking_Fundamentals/Exercises.md) | [Quiz 1](Domain_2_Linux_Networking_Fundamentals/Quiz_1.md) | [Quiz 2](Domain_2_Linux_Networking_Fundamentals/Quiz_2.md) | [Quiz 3](Domain_2_Linux_Networking_Fundamentals/Quiz_3.md) | [25 Questions](Domain_2_Linux_Networking_Fundamentals/Interview_Questions.md) |
+| **3. Kubernetes Platform Eng.** | [Study Guide](Domain_3_Kubernetes_Platform_Engineering/Study_Guide.md) | [White Papers & Docs](Domain_3_Kubernetes_Platform_Engineering/White_Papers.md) | [Labs](Domain_3_Kubernetes_Platform_Engineering/Exercises.md) | [Quiz 1](Domain_3_Kubernetes_Platform_Engineering/Quiz_1.md) | [Quiz 2](Domain_3_Kubernetes_Platform_Engineering/Quiz_2.md) | [Quiz 3](Domain_3_Kubernetes_Platform_Engineering/Quiz_3.md) | [25 Questions](Domain_3_Kubernetes_Platform_Engineering/Interview_Questions.md) |
+| **4. Infrastructure as Code** | [Study Guide](Domain_4_Infrastructure_as_Code/Study_Guide.md) | [White Papers & Docs](Domain_4_Infrastructure_as_Code/White_Papers.md) | [Labs](Domain_4_Infrastructure_as_Code/Exercises.md) | [Quiz 1](Domain_4_Infrastructure_as_Code/Quiz_1.md) | [Quiz 2](Domain_4_Infrastructure_as_Code/Quiz_2.md) | [Quiz 3](Domain_4_Infrastructure_as_Code/Quiz_3.md) | [25 Questions](Domain_4_Infrastructure_as_Code/Interview_Questions.md) |
+| **5. CI/CD, GitOps & Delivery** | [Study Guide](Domain_5_CICD_GitOps_Delivery/Study_Guide.md) | [White Papers & Docs](Domain_5_CICD_GitOps_Delivery/White_Papers.md) | [Labs](Domain_5_CICD_GitOps_Delivery/Exercises.md) | [Quiz 1](Domain_5_CICD_GitOps_Delivery/Quiz_1.md) | [Quiz 2](Domain_5_CICD_GitOps_Delivery/Quiz_2.md) | [Quiz 3](Domain_5_CICD_GitOps_Delivery/Quiz_3.md) | [25 Questions](Domain_5_CICD_GitOps_Delivery/Interview_Questions.md) |
+| **6. Observability & SRE** | [Study Guide](Domain_6_Observability_SRE/Study_Guide.md) | [White Papers & Docs](Domain_6_Observability_SRE/White_Papers.md) | [Labs](Domain_6_Observability_SRE/Exercises.md) | [Quiz 1](Domain_6_Observability_SRE/Quiz_1.md) | [Quiz 2](Domain_6_Observability_SRE/Quiz_2.md) | [Quiz 3](Domain_6_Observability_SRE/Quiz_3.md) | [25 Questions](Domain_6_Observability_SRE/Interview_Questions.md) |
+| **7. Security, Governance & FinOps** | [Study Guide](Domain_7_Security_Governance_FinOps/Study_Guide.md) | [White Papers & Docs](Domain_7_Security_Governance_FinOps/White_Papers.md) | [Labs](Domain_7_Security_Governance_FinOps/Exercises.md) | [Quiz 1](Domain_7_Security_Governance_FinOps/Quiz_1.md) | [Quiz 2](Domain_7_Security_Governance_FinOps/Quiz_2.md) | [Quiz 3](Domain_7_Security_Governance_FinOps/Quiz_3.md) | [25 Questions](Domain_7_Security_Governance_FinOps/Interview_Questions.md) |
+| **8. System Design** | [Study Guide](Domain_8_System_Design/Study_Guide.md) | [White Papers & Docs](Domain_8_System_Design/White_Papers.md) | [Design Drills](Domain_8_System_Design/Exercises.md) | [Quiz 1](Domain_8_System_Design/Quiz_1.md) | [Quiz 2](Domain_8_System_Design/Quiz_2.md) | [Quiz 3](Domain_8_System_Design/Quiz_3.md) | [25 Questions](Domain_8_System_Design/Interview_Questions.md) |
+| **9. Coding & Automation** | [Study Guide](Domain_9_Coding_Automation/Study_Guide.md) | [White Papers & Docs](Domain_9_Coding_Automation/White_Papers.md) | [Coding Problems](Domain_9_Coding_Automation/Exercises.md) | [Quiz 1](Domain_9_Coding_Automation/Quiz_1.md) | [Quiz 2](Domain_9_Coding_Automation/Quiz_2.md) | [Quiz 3](Domain_9_Coding_Automation/Quiz_3.md) | [25 Questions](Domain_9_Coding_Automation/Interview_Questions.md) |
+| **10. Behavioral & Career** | [Study Guide](Domain_10_Behavioral_Career/Study_Guide.md) | [White Papers & Docs](Domain_10_Behavioral_Career/White_Papers.md) | [Workbook](Domain_10_Behavioral_Career/Exercises.md) | [Quiz 1](Domain_10_Behavioral_Career/Quiz_1.md) | [Quiz 2](Domain_10_Behavioral_Career/Quiz_2.md) | [Quiz 3](Domain_10_Behavioral_Career/Quiz_3.md) | [25 Questions](Domain_10_Behavioral_Career/Interview_Questions.md) |
 
 ### How to Use Each File Type
 
 | File | How to Use It |
 | :--- | :--- |
+| `White_Papers.md` | Authoritative industry white papers, RFCs, kernel/CNCF standards, and official documentation to master alongside the Study Guide. |
 | `Study_Guide.md` | Read actively. Stop at every **Interview Angle** callout and say the answer out loud before reading on. |
 | `Exercises.md` | Build it, break it, fix it. The **Interview Talking Points** after each lab turn the work into stories you can tell. |
 | `Quiz_1–3.md` | Answer in your own words before reading the options, then pick one, then open the hidden answer. Target **85%+**; re-take misses after 48 hours. The right option is often the longest one, so don't let length decide for you. |
@@ -118,14 +133,17 @@ Track every attempt in the **[Mock Interview Log](Mock_Interviews/Mock_Interview
 - [ ] **Reading:** *Systems Performance (2nd Ed.)* (Ch. 3 Operating Systems, Ch. 6 CPUs, Ch. 7 Memory, Ch. 10 Network)
 - [ ] [Domain 2 Study Guide](Domain_2_Linux_Networking_Fundamentals/Study_Guide.md) + all 6 [labs](Domain_2_Linux_Networking_Fundamentals/Exercises.md)
 - [ ] Score 85%+ on Domain 2 [Quiz 1](Domain_2_Linux_Networking_Fundamentals/Quiz_1.md), [Quiz 2](Domain_2_Linux_Networking_Fundamentals/Quiz_2.md), [Quiz 3](Domain_2_Linux_Networking_Fundamentals/Quiz_3.md)
-- [ ] Deliver the "what happens when you curl an HTTPS URL" walkthrough out loud in under 5 minutes
-- [ ] [Domain 2 Interview Bank](Domain_2_Linux_Networking_Fundamentals/Interview_Questions.md), Tiers 1–2
+- [ ] [Domain 2 Interview Bank](Domain_2_Linux_Networking_Fundamentals/Interview_Questions.md)
 
-### Weeks 3–4: Kubernetes Platform Engineering
-- [ ] **Reading:** *Production Kubernetes* (Ch. 2 Deployment Models, Ch. 5 Pod Networking, Ch. 6 Service Routing, Ch. 8 Admission Control, Ch. 12 Multitenancy) & *Programming Kubernetes* (Ch. 1–6: API basics through operator frameworks)
-- [ ] [Domain 3 Study Guide](Domain_3_Kubernetes_Platform_Engineering/Study_Guide.md): sections 1–5 in week 3, the rest in week 4
-- [ ] All 6 [Domain 3 labs](Domain_3_Kubernetes_Platform_Engineering/Exercises.md), including the kubebuilder operator
-- [ ] Score 85%+ on Domain 3 [Quiz 1](Domain_3_Kubernetes_Platform_Engineering/Quiz_1.md), [Quiz 2](Domain_3_Kubernetes_Platform_Engineering/Quiz_2.md), [Quiz 3](Domain_3_Kubernetes_Platform_Engineering/Quiz_3.md)
+### Week 3: Kubernetes Architecture & API Machinery
+- [ ] **Reading:** *Production Kubernetes* (Ch. 2 Deployment Models, Ch. 5 Pod Networking, Ch. 6 Service Routing, Ch. 8 Admission Control)
+- [ ] [Domain 3 Study Guide](Domain_3_Kubernetes_Platform_Engineering/Study_Guide.md) (§1–5) + [Domain 3 labs](Domain_3_Kubernetes_Platform_Engineering/Exercises.md) 1–3
+- [ ] Score 85%+ on Domain 3 [Quiz 1](Domain_3_Kubernetes_Platform_Engineering/Quiz_1.md)
+
+### Week 4: Kubernetes Fleet Operations & Controllers
+- [ ] **Reading:** *Programming Kubernetes* (Ch. 2 API Basics, Ch. 3 client-go, Ch. 4 Custom Resources, Ch. 6 Writing Operators)
+- [ ] [Domain 3 Study Guide](Domain_3_Kubernetes_Platform_Engineering/Study_Guide.md) (§6–10) + [Domain 3 labs](Domain_3_Kubernetes_Platform_Engineering/Exercises.md) 4–6
+- [ ] Score 85%+ on Domain 3 [Quiz 2](Domain_3_Kubernetes_Platform_Engineering/Quiz_2.md) and [Quiz 3](Domain_3_Kubernetes_Platform_Engineering/Quiz_3.md)
 - [ ] [Domain 3 Interview Bank](Domain_3_Kubernetes_Platform_Engineering/Interview_Questions.md), all tiers
 - [ ] End of week 4: [Mock 3 (Kubernetes Deep Dive), Variant A](Mock_Interviews/Mock_Interview_3_Kubernetes_Deep_Dive.md)
 
@@ -353,4 +371,3 @@ Interviews are won with skills and stories, not certificates. Still, since you a
 10. **Manage the clock.** If you're 10 minutes into a 45-minute design and still listing requirements, move on.
 
 ---
-

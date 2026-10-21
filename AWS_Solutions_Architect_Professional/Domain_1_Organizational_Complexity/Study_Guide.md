@@ -93,7 +93,7 @@ By default, AWS Direct Connect is a private, dedicated physical circuit, **NOT e
 | Encryption Method | OSI Layer | Supported DX Connections & VIFs | Bandwidth & Architectural Trade-Offs |
 | :--- | :---: | :--- | :--- |
 | **AWS Direct Connect MACsec (`802.1AE`)** | **Layer 2** (Data Link) | **10 Gbps and 100 Gbps Dedicated Connections ONLY** (at supported PoPs) | Line-rate hardware encryption (`10G`/`100G`) with near-zero latency overhead. **Hop-by-hop only** (encrypts the physical fiber between your router and the AWS DX cage router; not end-to-end into the VPC). |
-| **Site-to-Site VPN over a Transit VIF** | **Layer 3** (IPsec) | Any $\ge 1\text{ Gbps}$ DX with a **Transit VIF** $\rightarrow$ DXGW $\rightarrow$ **Transit Gateway** | Create a TGW VPN Attachment whose Customer Gateway IP is reachable over the private Transit VIF IP space. Each VPN tunnel is capped at **1.25 Gbps**; use **ECMP (Equal-Cost Multi-Path)** across multiple VPN attachments to aggregate bandwidth (e.g., 4 tunnels = 5 Gbps). |
+| **Site-to-Site VPN over a Transit VIF** | **Layer 3** (IPsec) | Any $\ge 1\text{ Gbps}$ DX with a **Transit VIF** > DXGW > **Transit Gateway** | Create a TGW VPN Attachment whose Customer Gateway IP is reachable over the private Transit VIF IP space. Each VPN tunnel is capped at **1.25 Gbps**; use **ECMP (Equal-Cost Multi-Path)** across multiple VPN attachments to aggregate bandwidth (e.g., 4 tunnels = 5 Gbps). |
 | **Site-to-Site VPN over a Public VIF** | **Layer 3** (IPsec) | Any DX speed (`50 Mbps` to `100 Gbps`) using a **Public VIF** | The Public VIF advertises AWS public VPN endpoint IPs over BGP. Your on-prem router establishes an IPsec tunnel over the Public VIF to a **VGW** or **TGW**. Works even on sub-1G Hosted Connections that cannot use Transit VIFs! |
 | **Self-Managed IPsec Virtual Appliances on EC2** | **Layer 3** (IPsec) | Private VIF or Transit VIF | Deploy Cisco/Palo Alto/StrongSwan EC2 instances in a VPC (behind GWLB or in an edge subnet) to terminate higher-bandwidth IPsec tunnels (`5–20+ Gbps`) over a Private VIF. High operational overhead. |
 
@@ -130,7 +130,7 @@ flowchart TD
    * *The Solution*: To override Regional affinity or enforce deterministic Active/Passive routing across any DX connections on a DXGW, apply **BGP Local Preference Community Tags** on the on-premises routers:
      * Primary VIF: Tag outbound BGP route advertisements with **`7224:7300` (High Local Preference)**.
      * Secondary VIF: Tag outbound BGP route advertisements with **`7224:7100` (Low Local Preference)**.
-   * For traffic in the opposite direction (**On-Premises $\rightarrow$ AWS**), configure your on-premises router's inbound route-map to set a higher local `LOCAL_PREF` (e.g., `200` on Primary, `100` on Secondary) or match AWS Scope Communities (`7224:9100`).
+   * For traffic in the opposite direction (**On-Premises > AWS**), configure your on-premises router's inbound route-map to set a higher local `LOCAL_PREF` (e.g., `200` on Primary, `100` on Secondary) or match AWS Scope Communities (`7224:9100`).
 
 #### Bidirectional Forwarding Detection (BFD) for Sub-Second Failover
 
@@ -218,7 +218,7 @@ When mergers, acquisitions, or SaaS integrations result in two VPCs having **ide
 | Feature | AWS PrivateLink (Interface VPC Endpoints) | Amazon VPC Lattice |
 | :--- | :--- | :--- |
 | **OSI Layer & Protocols** | **Layer 4 (`TCP` only)** | **Layer 7 (`HTTP/1.1`, `HTTPS`, `HTTP/2`, `gRPC`, plus `TCP` pass-through)** |
-| **Directionality** | **Unidirectional**: Consumer VPC $\rightarrow$ Interface ENI $\rightarrow$ Provider **NLB** (or GWLB) | **Bidirectional Service Mesh**: Any service in the **Service Network** can call any other authorized service |
+| **Directionality** | **Unidirectional**: Consumer VPC > Interface ENI > Provider **NLB** (or GWLB) | **Bidirectional Service Mesh**: Any service in the **Service Network** can call any other authorized service |
 | **Supported Compute Targets** | Requires a **Network Load Balancer (NLB)** in the provider VPC | Directly targets **EC2, ECS, EKS (via AWS Gateway API Controller), AWS Lambda functions, and ALB/NLB** without requiring an NLB in front of every service! |
 | **Authentication & Authorization** | Network-level only (Security Groups on Endpoint ENIs + VPC Endpoint Policies for AWS services) | Native **IAM Auth Policies** (fine-grained SigV4 identity & context rules per HTTP path/method) + Security Groups |
 | **Traffic Routing Features** | Layer 4 TCP load balancing | Layer 7 **Path-based routing**, **Header-based routing**, and **Weighted Blue/Green traffic shifting** (e.g., 90% ECS, 10% Lambda) |
@@ -273,15 +273,15 @@ Every AWS VPC has an implicit **Route 53 Resolver** located at the **`VPC_CIDR +
 
 | Component | Traffic Direction | Architecture & AWS RAM Sharing Rules |
 | :--- | :--- | :--- |
-| **Route 53 Resolver Inbound Endpoint** | **On-Premises $\rightarrow$ AWS** | Creates 2+ ENIs with private IPs in your Hub VPC. Configure your **on-premises DNS servers** (BIND, Windows DNS, Infoblox) with a conditional forwarder for `*.aws.corp.internal` pointing to the Inbound Endpoint IPs over Direct Connect / VPN. |
-| **Route 53 Resolver Outbound Endpoint + Forwarding Rules** | **AWS VPCs $\rightarrow$ On-Premises** | Creates 2+ ENIs in your Hub VPC that send DNS queries out over DX/VPN to your on-premises DNS server IPs based on **Resolver Forwarding Rules** (e.g., `corp.onprem.local` $\rightarrow$ `172.16.1.53`). |
+| **Route 53 Resolver Inbound Endpoint** | **On-Premises > AWS** | Creates 2+ ENIs with private IPs in your Hub VPC. Configure your **on-premises DNS servers** (BIND, Windows DNS, Infoblox) with a conditional forwarder for `*.aws.corp.internal` pointing to the Inbound Endpoint IPs over Direct Connect / VPN. |
+| **Route 53 Resolver Outbound Endpoint + Forwarding Rules** | **AWS VPCs > On-Premises** | Creates 2+ ENIs in your Hub VPC that send DNS queries out over DX/VPN to your on-premises DNS server IPs based on **Resolver Forwarding Rules** (e.g., `corp.onprem.local` > `172.16.1.53`). |
 
 > [!TIP]
 > **Exam Cost & Scale Rule for Hybrid DNS**:
 > **NEVER deploy Outbound or Inbound Resolver Endpoints in every Spoke VPC!**
 > * Deploy **1 Inbound Endpoint** and **1 Outbound Endpoint** inside the **Central Network Hub VPC** (which has DX/TGW connectivity).
-> * For **AWS $\rightarrow$ On-Premises**: Create the **Resolver Forwarding Rules** in the Network Hub Account and **share the Forwarding Rules across the entire AWS Organization via AWS Resource Access Manager (RAM)**. Associate those shared rules with all 100 Spoke VPCs. The Spoke VPCs do not even need network connectivity to the Hub VPC for DNS forwarding—Route 53 Resolver routes the DNS query over the AWS control plane to the Hub VPC's Outbound Endpoint, which sends it over Direct Connect to on-premises!
-> * For **On-Premises $\rightarrow$ AWS**: Associate the Spoke VPCs' **Private Hosted Zones (PHZs)** with the **Central Network Hub VPC** (using cross-account `create-vpc-association-authorization` + `associate-vpc-with-hosted-zone`, or **Route 53 Profiles**). On-premises DNS servers query the single Inbound Endpoint in the Hub VPC, which resolves all associated PHZs!
+> * For **AWS > On-Premises**: Create the **Resolver Forwarding Rules** in the Network Hub Account and **share the Forwarding Rules across the entire AWS Organization via AWS Resource Access Manager (RAM)**. Associate those shared rules with all 100 Spoke VPCs. The Spoke VPCs do not even need network connectivity to the Hub VPC for DNS forwarding—Route 53 Resolver routes the DNS query over the AWS control plane to the Hub VPC's Outbound Endpoint, which sends it over Direct Connect to on-premises!
+> * For **On-Premises > AWS**: Associate the Spoke VPCs' **Private Hosted Zones (PHZs)** with the **Central Network Hub VPC** (using cross-account `create-vpc-association-authorization` + `associate-vpc-with-hosted-zone`, or **Route 53 Profiles**). On-premises DNS servers query the single Inbound Endpoint in the Hub VPC, which resolves all associated PHZs!
 
 ### 2.2 Route 53 Resolver DNS Firewall
 
@@ -548,7 +548,7 @@ As enterprises exhaust RFC 1918 IPv4 space (`10.0.0.0/8`), `SAP-C02` heavily tes
    * **All IPv6 addresses in AWS are globally unique and routable** (or Unique Local Addresses / ULA via IPAM for private networks). There is **no NAT required** for standard IPv6 internet egress!
 2. **Egress-Only Internet Gateway (EOIGW)**:
    * Because IPv6 addresses are public by default, routing `::/0` from a private subnet directly to an **Internet Gateway (IGW)** would make those instances publicly reachable from the internet (if Security Groups/NACLs allowed it).
-   * An **Egress-Only Internet Gateway (EOIGW)** is a stateful, horizontally scaled, redundant VPC component for **IPv6 traffic only**: it allows instances in private subnets to initiate outbound IPv6 connections (`::/0` $\rightarrow$ `eigw-xxxx`) to the internet while **blocking all unsolicited inbound IPv6 connections** from the internet!
+   * An **Egress-Only Internet Gateway (EOIGW)** is a stateful, horizontally scaled, redundant VPC component for **IPv6 traffic only**: it allows instances in private subnets to initiate outbound IPv6 connections (`::/0` > `eigw-xxxx`) to the internet while **blocking all unsolicited inbound IPv6 connections** from the internet!
    * **Free of Charge**: Unlike NAT Gateways (`$0.045/hr` + `$0.045/GB`), **Egress-Only Internet Gateways have `$0.00` hourly and `$0.00` per-GB data processing charges**!
 3. **DNS64 and NAT64 for IPv6-Only Subnets**:
    * Workloads running in **IPv6-only subnets** occasionally need to communicate with legacy IPv4-only endpoints (on-premises or public internet).
@@ -561,7 +561,7 @@ As enterprises exhaust RFC 1918 IPv4 space (`10.0.0.0/8`), `SAP-C02` heavily tes
 
 **Amazon VPC IPAM** automates IP address planning, tracking, and auditing across multi-region, multi-account AWS Organizations:
 
-* **Hierarchical Pools**: Create a Top-Level Global Pool (e.g., `10.0.0.0/8`) $\rightarrow$ Regional Pools (`10.0.0.0/12` for `us-east-1`, `10.16.0.0/12` for `eu-west-1`) $\rightarrow$ Environment Sub-Pools (`Prod` vs `Dev`) shared with specific OUs via **AWS RAM**.
+* **Hierarchical Pools**: Create a Top-Level Global Pool (e.g., `10.0.0.0/8`) > Regional Pools (`10.0.0.0/12` for `us-east-1`, `10.16.0.0/12` for `eu-west-1`) > Environment Sub-Pools (`Prod` vs `Dev`) shared with specific OUs via **AWS RAM**.
 * **Automated CIDR Allocation**: When developers create a VPC in CloudFormation or Terraform using `Ipv4IpamPoolId` and `Ipv4NetmaskLength`, IPAM automatically assigns a non-overlapping CIDR block—eliminating manual spreadsheets and overlapping CIDR mistakes!
 * **Proactive Compliance & Auditing**: Automatically detects overlapping CIDRs across existing VPCs, tracks IP utilization percentages (triggering CloudWatch Alarms before a subnet runs out of IPs), and retains historical IP-to-ENI assignment audit records for up to 3 years (answering *"Which EC2 instance owned IP `10.4.22.19` six months ago during a security incident?"*).
 

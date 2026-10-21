@@ -43,63 +43,68 @@ flowchart LR
 
 | Domain | Weight | Core Competencies | Workspace Directory |
 | :--- | :---: | :--- | :--- |
-| **Domain 1: Cluster Architecture, Installation & Configuration** | **25%** | RBAC, `kubeadm` install & upgrades, HA Control Plane, `etcd` backup/restore, CRDs, Operators, Helm, Kustomize | [`Domain_1_Cluster_Architecture_Installation_Configuration/`](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_1_Cluster_Architecture_Installation_Configuration) |
-| **Domain 2: Workloads & Scheduling** | **15%** | Pod lifecycle, Init & Native Sidecar containers, Deployments, DaemonSets, StatefulSets, Jobs/CronJobs, ConfigMaps/Secrets, Probes, QoS, Taints/Tolerations, Node/Pod Affinity, PriorityClass, PDB, HPA | [`Domain_2_Workloads_Scheduling/`](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_2_Workloads_Scheduling) |
-| **Domain 3: Services & Networking** | **20%** | CNI plugins (Calico/Cilium), Services (`ClusterIP`/`NodePort`/`LoadBalancer`/Headless), `EndpointSlices`, CoreDNS, `Ingress`, **Gateway API** (`GatewayClass`/`Gateway`/`HTTPRoute`), `NetworkPolicy` | [`Domain_3_Services_Networking/`](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_3_Services_Networking) |
-| **Domain 4: Storage** | **10%** | Volumes (`emptyDir`/`hostPath`/`projected`), PV & PVC lifecycle, AccessModes (`RWO`/`RWX`/`ROX`/`RWOP`), Reclaim Policies, `StorageClass`, CSI `WaitForFirstConsumer`, Online PVC expansion, `VolumeSnapshot` | [`Domain_4_Storage/`](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_4_Storage) |
-| **Domain 5: Troubleshooting** | **30%** | Static Pod failures (`/etc/kubernetes/manifests/`), `crictl` debugging when API server is down, `NotReady` worker nodes (`kubelet`/`containerd`/cgroups/certs), Pod `CrashLoopBackOff`/`Pending`/`OOMKilled`, Service/DNS/NetworkPolicy triage, `kubectl debug` | [`Domain_5_Troubleshooting/`](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_5_Troubleshooting) |
+| **Domain 1: Cluster Architecture, Installation & Configuration** | **25%** | RBAC, `kubeadm` install & upgrades, HA Control Plane, `etcd` backup/restore, CRDs, Operators, Helm, Kustomize | [`Domain_1_Cluster_Architecture_Installation_Configuration/`](Domain_1_Cluster_Architecture_Installation_Configuration) |
+| **Domain 2: Workloads & Scheduling** | **15%** | Pod lifecycle, Init & Native Sidecar containers, Deployments, DaemonSets, StatefulSets, Jobs/CronJobs, ConfigMaps/Secrets, Probes, QoS, Taints/Tolerations, Node/Pod Affinity, PriorityClass, PDB, HPA | [`Domain_2_Workloads_Scheduling/`](Domain_2_Workloads_Scheduling) |
+| **Domain 3: Services & Networking** | **20%** | CNI plugins (Calico/Cilium), Services (`ClusterIP`/`NodePort`/`LoadBalancer`/Headless), `EndpointSlices`, CoreDNS, `Ingress`, **Gateway API** (`GatewayClass`/`Gateway`/`HTTPRoute`), `NetworkPolicy` | [`Domain_3_Services_Networking/`](Domain_3_Services_Networking) |
+| **Domain 4: Storage** | **10%** | Volumes (`emptyDir`/`hostPath`/`projected`), PV & PVC lifecycle, AccessModes (`RWO`/`RWX`/`ROX`/`RWOP`), Reclaim Policies, `StorageClass`, CSI `WaitForFirstConsumer`, Online PVC expansion, `VolumeSnapshot` | [`Domain_4_Storage/`](Domain_4_Storage) |
+| **Domain 5: Troubleshooting** | **30%** | Static Pod failures (`/etc/kubernetes/manifests/`), `crictl` debugging when API server is down, `NotReady` worker nodes (`kubelet`/`containerd`/cgroups/certs), Pod `CrashLoopBackOff`/`Pending`/`OOMKilled`, Service/DNS/NetworkPolicy triage, `kubectl debug` | [`Domain_5_Troubleshooting/`](Domain_5_Troubleshooting) |
 
 ---
 
 ## Quick Navigation Matrix
 
 ### Master Reference & Mock Exams
-- **[CKA Master Cheat Sheet](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/CKA_Master_Cheat_Sheet.md)** — Exam-day shell setup, imperative `kubectl` commands, JSONPath templates, `etcdctl` backup/restore, `kubeadm` upgrade sequence, and `crictl`/`journalctl` triage commands.
-- **[Practice Exams Overview](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Practice_Exams/README.md)** — Instructions, timing strategies, and cluster topology for the 3 full-length mock exams.
-  - **[Practice Exam 1 (Standard Exam Simulation — 17 Tasks)](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Practice_Exams/Practice_Exam_1.md)**
-  - **[Practice Exam 2 (Production Scenarios — 17 Tasks)](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Practice_Exams/Practice_Exam_2.md)**
-  - **[Practice Exam 3 (Hard/Challenge Mode — 17 Tasks)](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Practice_Exams/Practice_Exam_3.md)**
+- **[CKA Master Cheat Sheet](CKA_Master_Cheat_Sheet.md)** — Exam-day shell setup, imperative `kubectl` commands, JSONPath templates, `etcdctl` backup/restore, `kubeadm` upgrade sequence, and `crictl`/`journalctl` triage commands.
+- **[Practice Exams Overview](Practice_Exams/README.md)** — Instructions, timing strategies, and cluster topology for the 3 full-length mock exams.
+  - **[Practice Exam 1 (Standard Exam Simulation — 17 Tasks)](Practice_Exams/Practice_Exam_1.md)**
+  - **[Practice Exam 2 (Production Scenarios — 17 Tasks)](Practice_Exams/Practice_Exam_2.md)**
+  - **[Practice Exam 3 (Hard/Challenge Mode — 17 Tasks)](Practice_Exams/Practice_Exam_3.md)**
 
 ### Domain Study Guides, Labs & Quizzes
 
-| Domain | Study Guide | Hands-On Labs (6 Scenarios) | Quiz 1 | Quiz 2 | Quiz 3 |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Domain 1 (25%)** | [Study Guide](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_1_Cluster_Architecture_Installation_Configuration/Study_Guide.md) | [Exercises](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_1_Cluster_Architecture_Installation_Configuration/Exercises.md) | [Quiz 1](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_1_Cluster_Architecture_Installation_Configuration/Quiz_1.md) | [Quiz 2](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_1_Cluster_Architecture_Installation_Configuration/Quiz_2.md) | [Quiz 3](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_1_Cluster_Architecture_Installation_Configuration/Quiz_3.md) |
-| **Domain 2 (15%)** | [Study Guide](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_2_Workloads_Scheduling/Study_Guide.md) | [Exercises](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_2_Workloads_Scheduling/Exercises.md) | [Quiz 1](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_2_Workloads_Scheduling/Quiz_1.md) | [Quiz 2](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_2_Workloads_Scheduling/Quiz_2.md) | [Quiz 3](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_2_Workloads_Scheduling/Quiz_3.md) |
-| **Domain 3 (20%)** | [Study Guide](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_3_Services_Networking/Study_Guide.md) | [Exercises](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_3_Services_Networking/Exercises.md) | [Quiz 1](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_3_Services_Networking/Quiz_1.md) | [Quiz 2](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_3_Services_Networking/Quiz_2.md) | [Quiz 3](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_3_Services_Networking/Quiz_3.md) |
-| **Domain 4 (10%)** | [Study Guide](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_4_Storage/Study_Guide.md) | [Exercises](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_4_Storage/Exercises.md) | [Quiz 1](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_4_Storage/Quiz_1.md) | [Quiz 2](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_4_Storage/Quiz_2.md) | [Quiz 3](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_4_Storage/Quiz_3.md) |
-| **Domain 5 (30%)** | [Study Guide](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_5_Troubleshooting/Study_Guide.md) | [Exercises](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_5_Troubleshooting/Exercises.md) | [Quiz 1](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_5_Troubleshooting/Quiz_1.md) | [Quiz 2](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_5_Troubleshooting/Quiz_2.md) | [Quiz 3](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_5_Troubleshooting/Quiz_3.md) |
+| Domain | Study Guide | Docs & Standards | Hands-On Labs (6 Scenarios) | Quiz 1 | Quiz 2 | Quiz 3 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Domain 1 (25%)** | [Study Guide](Domain_1_Cluster_Architecture_Installation_Configuration/Study_Guide.md) | [White Papers & Docs](Domain_1_Cluster_Architecture_Installation_Configuration/White_Papers.md) | [Exercises](Domain_1_Cluster_Architecture_Installation_Configuration/Exercises.md) | [Quiz 1](Domain_1_Cluster_Architecture_Installation_Configuration/Quiz_1.md) | [Quiz 2](Domain_1_Cluster_Architecture_Installation_Configuration/Quiz_2.md) | [Quiz 3](Domain_1_Cluster_Architecture_Installation_Configuration/Quiz_3.md) |
+| **Domain 2 (15%)** | [Study Guide](Domain_2_Workloads_Scheduling/Study_Guide.md) | [White Papers & Docs](Domain_2_Workloads_Scheduling/White_Papers.md) | [Exercises](Domain_2_Workloads_Scheduling/Exercises.md) | [Quiz 1](Domain_2_Workloads_Scheduling/Quiz_1.md) | [Quiz 2](Domain_2_Workloads_Scheduling/Quiz_2.md) | [Quiz 3](Domain_2_Workloads_Scheduling/Quiz_3.md) |
+| **Domain 3 (20%)** | [Study Guide](Domain_3_Services_Networking/Study_Guide.md) | [White Papers & Docs](Domain_3_Services_Networking/White_Papers.md) | [Exercises](Domain_3_Services_Networking/Exercises.md) | [Quiz 1](Domain_3_Services_Networking/Quiz_1.md) | [Quiz 2](Domain_3_Services_Networking/Quiz_2.md) | [Quiz 3](Domain_3_Services_Networking/Quiz_3.md) |
+| **Domain 4 (10%)** | [Study Guide](Domain_4_Storage/Study_Guide.md) | [White Papers & Docs](Domain_4_Storage/White_Papers.md) | [Exercises](Domain_4_Storage/Exercises.md) | [Quiz 1](Domain_4_Storage/Quiz_1.md) | [Quiz 2](Domain_4_Storage/Quiz_2.md) | [Quiz 3](Domain_4_Storage/Quiz_3.md) |
+| **Domain 5 (30%)** | [Study Guide](Domain_5_Troubleshooting/Study_Guide.md) | [White Papers & Docs](Domain_5_Troubleshooting/White_Papers.md) | [Exercises](Domain_5_Troubleshooting/Exercises.md) | [Quiz 1](Domain_5_Troubleshooting/Quiz_1.md) | [Quiz 2](Domain_5_Troubleshooting/Quiz_2.md) | [Quiz 3](Domain_5_Troubleshooting/Quiz_3.md) |
 
 ---
 
 ## Recommended 4-Week Study Plan & Progress Tracker
 
 ### Week 1: Architecture, Control Plane & Cluster Operations (Domain 1)
-- [ ] Read [Domain 1 Study Guide](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_1_Cluster_Architecture_Installation_Configuration/Study_Guide.md)
-- [ ] Complete all 6 labs in [Domain 1 Exercises](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_1_Cluster_Architecture_Installation_Configuration/Exercises.md) (`kubeadm` upgrade, `etcd` snapshot backup/restore, RBAC, Helm, Kustomize, CRDs)
-- [ ] Score 85%+ on [Domain 1 Quiz 1](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_1_Cluster_Architecture_Installation_Configuration/Quiz_1.md), [Quiz 2](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_1_Cluster_Architecture_Installation_Configuration/Quiz_2.md), and [Quiz 3](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_1_Cluster_Architecture_Installation_Configuration/Quiz_3.md)
+- [ ] Read [Domain 1 Study Guide](Domain_1_Cluster_Architecture_Installation_Configuration/Study_Guide.md)
+- [ ] Review [Domain 1 Technical Documentation & Standards](Domain_1_Cluster_Architecture_Installation_Configuration/White_Papers.md)
+- [ ] Complete all 6 labs in [Domain 1 Exercises](Domain_1_Cluster_Architecture_Installation_Configuration/Exercises.md) (`kubeadm` upgrade, `etcd` snapshot backup/restore, RBAC, Helm, Kustomize, CRDs)
+- [ ] Score 85%+ on [Domain 1 Quiz 1](Domain_1_Cluster_Architecture_Installation_Configuration/Quiz_1.md), [Quiz 2](Domain_1_Cluster_Architecture_Installation_Configuration/Quiz_2.md), and [Quiz 3](Domain_1_Cluster_Architecture_Installation_Configuration/Quiz_3.md)
 
 ### Week 2: Workloads, Scheduling & Storage (Domains 2 & 4)
-- [ ] Read [Domain 2 Study Guide](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_2_Workloads_Scheduling/Study_Guide.md)
-- [ ] Complete all 6 labs in [Domain 2 Exercises](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_2_Workloads_Scheduling/Exercises.md)
-- [ ] Score 85%+ on [Domain 2 Quiz 1](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_2_Workloads_Scheduling/Quiz_1.md), [Quiz 2](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_2_Workloads_Scheduling/Quiz_2.md), and [Quiz 3](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_2_Workloads_Scheduling/Quiz_3.md)
-- [ ] Read [Domain 4 Study Guide](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_4_Storage/Study_Guide.md)
-- [ ] Complete all 6 labs in [Domain 4 Exercises](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_4_Storage/Exercises.md)
-- [ ] Score 85%+ on [Domain 4 Quiz 1](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_4_Storage/Quiz_1.md), [Quiz 2](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_4_Storage/Quiz_2.md), and [Quiz 3](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_4_Storage/Quiz_3.md)
+- [ ] Read [Domain 2 Study Guide](Domain_2_Workloads_Scheduling/Study_Guide.md)
+- [ ] Review [Domain 2 Technical Documentation & Standards](Domain_2_Workloads_Scheduling/White_Papers.md)
+- [ ] Complete all 6 labs in [Domain 2 Exercises](Domain_2_Workloads_Scheduling/Exercises.md)
+- [ ] Score 85%+ on [Domain 2 Quiz 1](Domain_2_Workloads_Scheduling/Quiz_1.md), [Quiz 2](Domain_2_Workloads_Scheduling/Quiz_2.md), and [Quiz 3](Domain_2_Workloads_Scheduling/Quiz_3.md)
+- [ ] Read [Domain 4 Study Guide](Domain_4_Storage/Study_Guide.md)
+- [ ] Review [Domain 4 Technical Documentation & Standards](Domain_4_Storage/White_Papers.md)
+- [ ] Complete all 6 labs in [Domain 4 Exercises](Domain_4_Storage/Exercises.md)
+- [ ] Score 85%+ on [Domain 4 Quiz 1](Domain_4_Storage/Quiz_1.md), [Quiz 2](Domain_4_Storage/Quiz_2.md), and [Quiz 3](Domain_4_Storage/Quiz_3.md)
 
 ### Week 3: Services, Gateway API, NetworkPolicies & Troubleshooting (Domains 3 & 5)
-- [ ] Read [Domain 3 Study Guide](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_3_Services_Networking/Study_Guide.md)
-- [ ] Complete all 6 labs in [Domain 3 Exercises](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_3_Services_Networking/Exercises.md)
-- [ ] Score 85%+ on [Domain 3 Quiz 1](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_3_Services_Networking/Quiz_1.md), [Quiz 2](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_3_Services_Networking/Quiz_2.md), and [Quiz 3](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_3_Services_Networking/Quiz_3.md)
-- [ ] Read [Domain 5 Study Guide](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_5_Troubleshooting/Study_Guide.md)
-- [ ] Complete all 6 labs in [Domain 5 Exercises](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_5_Troubleshooting/Exercises.md)
-- [ ] Score 85%+ on [Domain 5 Quiz 1](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_5_Troubleshooting/Quiz_1.md), [Quiz 2](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_5_Troubleshooting/Quiz_2.md), and [Quiz 3](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Domain_5_Troubleshooting/Quiz_3.md)
+- [ ] Read [Domain 3 Study Guide](Domain_3_Services_Networking/Study_Guide.md)
+- [ ] Review [Domain 3 Technical Documentation & Standards](Domain_3_Services_Networking/White_Papers.md)
+- [ ] Complete all 6 labs in [Domain 3 Exercises](Domain_3_Services_Networking/Exercises.md)
+- [ ] Score 85%+ on [Domain 3 Quiz 1](Domain_3_Services_Networking/Quiz_1.md), [Quiz 2](Domain_3_Services_Networking/Quiz_2.md), and [Quiz 3](Domain_3_Services_Networking/Quiz_3.md)
+- [ ] Read [Domain 5 Study Guide](Domain_5_Troubleshooting/Study_Guide.md)
+- [ ] Review [Domain 5 Technical Documentation & Standards](Domain_5_Troubleshooting/White_Papers.md)
+- [ ] Complete all 6 labs in [Domain 5 Exercises](Domain_5_Troubleshooting/Exercises.md)
+- [ ] Score 85%+ on [Domain 5 Quiz 1](Domain_5_Troubleshooting/Quiz_1.md), [Quiz 2](Domain_5_Troubleshooting/Quiz_2.md), and [Quiz 3](Domain_5_Troubleshooting/Quiz_3.md)
 
 ### Week 4: Speed Drills & Full-Length Mock Exams
-- [ ] Memorize all imperative workflows in [CKA Master Cheat Sheet](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/CKA_Master_Cheat_Sheet.md)
-- [ ] Complete [Practice Exam 1](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Practice_Exams/Practice_Exam_1.md) under strict 120-minute timer (Target: $\ge 75\%$)
-- [ ] Complete [Practice Exam 2](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Practice_Exams/Practice_Exam_2.md) under strict 120-minute timer (Target: $\ge 80\%$)
-- [ ] Complete [Practice Exam 3](file:///home/k-henry/repos/technical/Certified_Kubernetes_Administrator/Practice_Exams/Practice_Exam_3.md) under strict 120-minute timer (Target: $\ge 85\%$)
+- [ ] Memorize all imperative workflows in [CKA Master Cheat Sheet](CKA_Master_Cheat_Sheet.md)
+- [ ] Complete [Practice Exam 1](Practice_Exams/Practice_Exam_1.md) under strict 120-minute timer (Target: $\ge 75\%$)
+- [ ] Complete [Practice Exam 2](Practice_Exams/Practice_Exam_2.md) under strict 120-minute timer (Target: $\ge 80\%$)
+- [ ] Complete [Practice Exam 3](Practice_Exams/Practice_Exam_3.md) under strict 120-minute timer (Target: $\ge 85\%$)
 
 ---
 

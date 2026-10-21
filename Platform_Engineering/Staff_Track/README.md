@@ -9,6 +9,18 @@ Staff is a scope of work, not a level of knowledge. Staff engineers are judged o
 
 ---
 
+## Staff SRE & Platform Engineering Core Playbooks
+
+To bridge the gap between theoretical knowledge and real production operating depth, review and reference these production-grade staff artifacts:
+
+| Staff Artifact | Focus & Depth | Why Staff Engineers Need It |
+| :--- | :--- | :--- |
+| **[Staff SRE Production Playbook](Staff_SRE_Playbook.md)** | Linux memory/OOM triage, CFS CPU throttling, TCP socket buffers, eBPF tracing one-liners, and Google MWMBR PromQL alerting rules | Definitive systems engineering reference for kernel-level debugging, latency mitigation, and statistical alerting math. |
+| **[Incident War Room Postmortems](../Incident_War_Room_Postmortems.md)** | Five comprehensive SEV-1 production incident post-mortems (Conntrack table saturation, etcd fsync starvation, CFS CPU throttling, DB thundering herd retry storms, BGP asymmetric routing) | Learn how to lead high-stakes war rooms, isolate subtle systemic failure modes, and formulate blameless postmortems with high-impact action items. |
+| **[Architecture Decision Records (ADRs)](../Architecture_Decision_Records.md)** | Five production ADRs (Backstage vs Port, vCluster vs Mega-clusters, Crossplane vs OpenTofu, Gateway API vs Lattice, OTel Tail-Based Sampling vs Direct Ingestion) | Master how to structure organization-wide technical proposals, weigh architectural trade-offs, and steer cross-team consensus. |
+
+---
+
 ## 1. How Progress Is Measured
 
 Seven dimensions, extending the Mid / Senior / Staff table in [Domain 10 §7.1](../Domain_10_Behavioral_Career/Study_Guide.md). Score each one quarterly: **1** = mid, **2** = senior, **3** = staff. A score only counts if you can link the artifact behind it.
@@ -121,8 +133,8 @@ Staff engineers are judged mostly on written work. **Write one document a month*
 | :--- | :--- | :--- |
 | Problem statement | Framing something nobody owns yet | One page: symptom, evidence, cost of doing nothing, who is affected |
 | Design doc / RFC | A change other teams must review | [Domain 1 §9.2](../Domain_1_Platform_Foundations_IDP/Study_Guide.md) |
-| ADR | Recording a decision and its context | [Domain 1 §9.2](../Domain_1_Platform_Foundations_IDP/Study_Guide.md) |
-| Postmortem | Learning from an outage | [Domain 6 Lab 6](../Domain_6_Observability_SRE/Exercises.md) |
+| ADR | Recording a decision and its context | [Domain 1 §9.2](../Domain_1_Platform_Foundations_IDP/Study_Guide.md) & [ADR Repository](../Architecture_Decision_Records.md) |
+| Postmortem | Learning from an outage | [Domain 6 Lab 6](../Domain_6_Observability_SRE/Exercises.md) & [War Room Postmortems](../Incident_War_Room_Postmortems.md) |
 | Migration plan | Moving many teams off something | §6.2 |
 | Strategy | Choosing what *not* to do for a year | §6.3 |
 | Executive memo | Asking for money or headcount | [Domain 10 §10.1](../Domain_10_Behavioral_Career/Study_Guide.md) |

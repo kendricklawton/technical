@@ -164,10 +164,10 @@ A CloudFormation stack manages an Amazon Aurora PostgreSQL DB cluster (`AWS::RDS
 A development team adopts the AWS Cloud Development Kit (AWS CDK) in TypeScript to manage application infrastructure. During their local development workflow, engineers need to inspect the generated CloudFormation template, verify the difference between local changes and the currently deployed stack, and deploy the stack without prompt confirmation in CI/CD.
 
 **Which sequence of AWS CDK CLI commands represents this workflow?**
-- A. `cdk build` $\rightarrow$ `cdk compare` $\rightarrow$ `cdk push`
-- B. `cdk synth` $\rightarrow$ `cdk diff` $\rightarrow$ `cdk deploy --require-approval never`
-- C. `cdk generate` $\rightarrow$ `cdk test` $\rightarrow$ `cdk execute`
-- D. `cdk compile` $\rightarrow$ `cdk inspect` $\rightarrow$ `cdk apply`
+- A. `cdk build` > `cdk compare` > `cdk push`
+- B. `cdk synth` > `cdk diff` > `cdk deploy --require-approval never`
+- C. `cdk generate` > `cdk test` > `cdk execute`
+- D. `cdk compile` > `cdk inspect` > `cdk apply`
 
 ---
 

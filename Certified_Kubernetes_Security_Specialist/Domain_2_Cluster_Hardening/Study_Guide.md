@@ -283,7 +283,7 @@ Security vulnerabilities (CVEs) in Kubernetes components are discovered regularl
 
 ### 4.1 Kubernetes Version Skew Policy & Upgrade Order
 
-1. **No Skipping Minor Versions**: You can only upgrade one minor version at a time (`v1.30.x` $\rightarrow$ `v1.31.x`, never `v1.29` $\rightarrow$ `v1.31` directly).
+1. **No Skipping Minor Versions**: You can only upgrade one minor version at a time (`v1.30.x` > `v1.31.x`, never `v1.29` > `v1.31` directly).
 2. **`kube-apiserver` First**: In a multi-node cluster, `kube-apiserver` must be upgraded first.
 3. **`kubelet` Version Skew**: `kubelet` may never be newer than `kube-apiserver`, and may be up to 3 minor versions older in recent Kubernetes releases (though during `kubeadm` upgrades, you upgrade `kubelet` right after the control plane on each node).
 
