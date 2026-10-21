@@ -24,7 +24,7 @@ In Kubernetes 1.27+, you want PVCs created by a StatefulSet's `volumeClaimTempla
 ---
 
 ### Question 3: Resolving Volume Permission Denied Errors with `fsGroup`
-A Pod runs as non-root user `runAsUser: 10001` and mounts an `ext4` CSI block volume at `/var/lib/postgresql/data`. The container fails to start with `initdb: could not change permissions of directory "/var/lib/postgresql/data": Permission denied` because the newly formatted `ext4` volume is owned by `root:root`. What Pod `securityContext` setting causes Kubernetes to recursively `chown` and set group-write permissions on the mounted volume?
+A Pod runs as non-root user `runAsUser: 10001` and mounts an `ext4` DigitalOcean Block Storage CSI volume at `/var/lib/postgresql/data`. The container fails to start with `initdb: could not change permissions of directory "/var/lib/postgresql/data": Permission denied` because the newly formatted `ext4` volume is owned by `root:root`. What Pod `securityContext` setting causes Kubernetes to recursively `chown` and set group-write permissions on the mounted volume?
 - A. `runAsGroup: 10001`
 - B. `fsGroup: 10001`
 - C. `allowPrivilegeEscalation: true`
@@ -42,7 +42,7 @@ A StatefulSet mounts a `2Ti` persistent volume containing 15 million small files
 ---
 
 ### Question 5: Diagnosing `Multi-Attach error for volume`
-During a rolling update of a Deployment using an AWS EBS (`ReadWriteOnce`) PVC, the new Pod on `worker-2` hangs in `ContainerCreating` with event: `Multi-Attach error for volume "pvc-89a1..." Volume is already exclusively attached to one node and can't be attached to another`. How do you prevent this during Deployment rollouts of single-replica RWO workloads?
+During a rolling update of a Deployment using a DigitalOcean Block Storage (`dobs.csi.digitalocean.com`, `ReadWriteOnce`) PVC, the new Pod on `cka-worker2` hangs in `ContainerCreating` with event: `Multi-Attach error for volume "pvc-89a1..." Volume is already exclusively attached to one node and can't be attached to another`. How do you prevent this during Deployment rollouts of single-replica RWO workloads?
 - A. Change the Deployment `spec.strategy.type` from `RollingUpdate` to `Recreate` so the old Pod is terminated and its RWO volume detached before the new Pod is scheduled.
 - B. Increase `maxSurge` to `100%`.
 - C. Set `persistentVolumeReclaimPolicy: Recycle`.
@@ -60,9 +60,9 @@ An administrator ran `kubectl delete pvc data-old-0` and also force-deleted the 
 ---
 
 ### Question 7: Generic Ephemeral Volumes (`ephemeral` Volume Source)
-A batch analytics job requires a `200Gi` scratch disk backed by a high-IOPS CSI StorageClass (`io2-nvme`), which exceeds the worker node's root disk capacity (`emptyDir`), and must be automatically created with the Pod and destroyed when the Pod finishes. Which volume type should be used?
+A batch analytics job requires a `200Gi` scratch disk backed by a DigitalOcean Block Storage CSI StorageClass (`do-block-storage`), which exceeds the worker Droplet's root disk capacity (`emptyDir`), and must be automatically created with the Pod and destroyed when the Pod finishes. Which volume type should be used?
 - A. `hostPath`
-- B. Generic `ephemeral` volume containing a `volumeClaimTemplate` referencing `storageClassName: io2-nvme`
+- B. Generic `ephemeral` volume containing a `volumeClaimTemplate` referencing `storageClassName: do-block-storage`
 - C. `configMap`
 - D. Static `PersistentVolume` with `Retain` policy
 
@@ -78,17 +78,17 @@ Why must a CSI Node DaemonSet container configure `mountPropagation: Bidirection
 ---
 
 ### Question 9: NFS Mount Failures (`mount.nfs: No such file or directory` / Missing Client Utils)
-A Pod mounting an NFSv4 PersistentVolume fails in `ContainerCreating` with `Output: mount: /var/lib/kubelet/pods/...: bad option; for several filesystems (e.g. nfs, cifs) you might need a /sbin/mount.<type> helper program`. Where must the `nfs-common` / `nfs-utils` package be installed?
+A Pod mounting an NFSv4 PersistentVolume over the DigitalOcean VPC (`10.116.0.10`) fails in `ContainerCreating` with `Output: mount: /var/lib/kubelet/pods/...: bad option; for several filesystems (e.g. nfs, cifs) you might need a /sbin/mount.<type> helper program`. Where must the `nfs-common` / `nfs-utils` package be installed?
 - A. Inside the application container image.
-- B. On the host OS of every Kubernetes worker node that schedules Pods mounting NFS volumes.
+- B. On the host OS of every Kubernetes worker Droplet that schedules Pods mounting NFS volumes.
 - C. Only on the `kube-apiserver` control-plane node.
 - D. Inside the `coredns` pod.
 
 ---
 
 ### Question 10: Eviction Signals for Node `ephemeral-storage` (`imagefs` vs `nodefs`)
-A Pod without storage limits writes 45 GB of debug logs into an `emptyDir` volume, causing the worker node's root filesystem to cross `nodefs.available<10%`. What action does the kubelet take?
-- A. It expands the node's root disk automatically.
+A Pod without storage limits writes 45 GB of debug logs into an `emptyDir` volume, causing the worker Droplet's root filesystem (`/dev/vda1`) to cross `nodefs.available<10%`. What action does the kubelet take?
+- A. It expands the Droplet's root disk automatically.
 - B. It taints the node with `node.kubernetes.io/disk-pressure:NoSchedule` and evicts Pods exceeding their ephemeral-storage requests (starting with `BestEffort` and Pods writing the most to `emptyDir`/container writable layers).
 - C. It deletes all PersistentVolumes in the cluster.
 - D. It restarts `kube-proxy`.

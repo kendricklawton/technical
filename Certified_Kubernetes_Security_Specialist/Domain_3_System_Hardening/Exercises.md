@@ -1,22 +1,22 @@
 # Domain 3: System Hardening — Production Hands-On Labs & CKS Workbook
 
 **Domain Weight:** 15% of the CKS Exam  
-**Format:** 6 Performance-Based Security Labs with Host Commands, Kernel Profiles, Manifests, and Verification Steps.
+**Format:** 6 Performance-Based Security Labs with Host Commands, Kernel Profiles, Manifests, and Verification Steps on your **DigitalOcean Ubuntu 24.04 LTS Droplets** (`cks-cp1`, `cks-worker1`, `cks-worker2`).
 
 ---
 
-## Lab 1: Authoring, Loading & Enforcing Custom AppArmor Profiles on Worker Nodes
+## Lab 1: Authoring, Loading & Enforcing Custom AppArmor Profiles on Worker Droplets
 
 ### 1.1 Scenario
-On worker node `worker-01`, a custom AppArmor profile exists at `/root/usr.sbin.nginx-hardened`. You must:
+On worker Droplet `cks-worker1` (`worker-01`), a custom AppArmor profile exists at `/root/usr.sbin.nginx-hardened`. You must:
 1. Inspect the profile name declared inside the file.
-2. Copy it into `/etc/apparmor.d/` and load it into the kernel in **enforce** mode on `worker-01`.
+2. Copy it into `/etc/apparmor.d/` and load it into the kernel in **enforce** mode on `cks-worker1`.
 3. Update Deployment `secure-nginx` in namespace `dmz` so its containers execute confined by this AppArmor profile using the Kubernetes 1.30+ GA `securityContext.appArmorProfile` syntax.
 
 ### 1.2 Execution Steps
 ```bash
-# Step 1: SSH to worker-01 and inspect the profile header
-ssh worker-01
+# Step 1: SSH to cks-worker1 (10.116.0.11) and inspect the profile header
+ssh cks-worker1
 cat << 'EOF' | sudo tee /etc/apparmor.d/usr.sbin.nginx-hardened
 #include <tunables/global>
 
@@ -53,7 +53,7 @@ sudo aa-status | grep -B 2 -A 5 "k8s-nginx-no-write"
 exit
 ```
 
-Apply the Pod/Deployment manifest targeting `worker-01`:
+Apply the Pod/Deployment manifest targeting `cks-worker1`:
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -70,7 +70,7 @@ spec:
       labels:
         app: secure-nginx
     spec:
-      nodeName: worker-01
+      nodeName: cks-worker1
       securityContext:
         appArmorProfile:
           type: Localhost
@@ -97,13 +97,13 @@ kubectl exec -n dmz deploy/secure-nginx -- touch /tmp/exploit
 ## Lab 2: Custom Seccomp Syscall Filtering & Auditing (`SCMP_ACT_ERRNO` & `SCMP_ACT_LOG`)
 
 ### 2.1 Scenario
-You must deploy two custom Seccomp profiles into the kubelet's default seccomp root directory (`/var/lib/kubelet/seccomp/profiles/`) on `worker-01`:
+You must deploy two custom Seccomp profiles into the kubelet's default seccomp root directory (`/var/lib/kubelet/seccomp/profiles/`) on `cks-worker1`:
 1. `audit-all.json`: Logs all system calls made by a container without blocking them.
 2. `deny-mount-chmod.json`: Allows standard syscalls by default (`SCMP_ACT_ALLOW`), but blocks `chmod`, `fchmod`, `fchmodat`, `mount`, `umount2`, `reboot`, and `swapon` with `EPERM` (`SCMP_ACT_ERRNO`).
 
 ### 2.2 Execution Steps
 ```bash
-ssh worker-01
+ssh cks-worker1
 sudo mkdir -p /var/lib/kubelet/seccomp/profiles
 
 # 1. Create audit-all.json
@@ -149,7 +149,7 @@ metadata:
   name: seccomp-hardened
   namespace: default
 spec:
-  nodeName: worker-01
+  nodeName: cks-worker1
   securityContext:
     seccompProfile:
       type: Localhost
@@ -186,7 +186,7 @@ A Pod `net-agent` in namespace `ops` is currently running with `privileged: true
 
 ### 3.2 Execution Steps
 ```bash
-# Step 1: Inspect current privileged container's capability bitmask on worker-01
+# Step 1: Inspect current privileged container's capability bitmask on cks-worker1
 CID=$(sudo crictl ps --name net-agent -q)
 PID=$(sudo crictl inspect "$CID" | jq '.info.pid')
 grep Cap /proc/"$PID"/status
@@ -238,16 +238,16 @@ capsh --decode="$CAP_EFF"
 
 ---
 
-## Lab 4: Host OS Network Port Audit, Daemon Removal & `ufw` Firewall Lockdown
+## Lab 4: Host OS Network Port Audit, Daemon Removal & `ufw` Firewall Lockdown on DigitalOcean Droplets
 
 ### 4.1 Scenario
-On `worker-01`:
+On `cks-worker1` (`worker-01`):
 1. An unauthorized service is listening on TCP port `2121` (FTP) or `9091`. Find the PID and systemd unit, stop and mask it, and remove its package.
-2. Configure `ufw` on `worker-01` to default deny incoming traffic while explicitly permitting SSH (`22/tcp`), Kubelet API (`10250/tcp`), CNI VXLAN (`8472/udp`) / Calico BGP (`179/tcp`), and NodePort range (`30000:32767/tcp`).
+2. Configure `ufw` on `cks-worker1` to default deny incoming traffic while explicitly permitting SSH (`22/tcp` on `eth0`), internal DigitalOcean VPC traffic on `eth1` (`10.116.0.0/20`), Kubelet API (`10250/tcp`), CNI VXLAN (`8472/udp`) / Cilium (`4240/tcp`) / Calico BGP (`179/tcp`), and NodePort range (`30000:32767/tcp`).
 
 ### 4.2 Execution Steps
 ```bash
-ssh worker-01
+ssh cks-worker1
 
 # 1. Identify listening process on port 9091
 sudo ss -tulpn | grep :9091
@@ -262,12 +262,14 @@ sudo systemctl disable --now transmission-daemon
 sudo systemctl mask transmission-daemon
 sudo apt-get purge -y transmission-daemon
 
-# 4. Configure UFW host firewall safely
+# 4. Configure UFW host firewall safely across eth0 (Public WAN) and eth1 (DigitalOcean VPC)
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw allow 22/tcp
+sudo ufw allow in on eth1 from 10.116.0.0/20
 sudo ufw allow 10250/tcp
 sudo ufw allow 179/tcp
+sudo ufw allow 4240/tcp
 sudo ufw allow 8472/udp
 sudo ufw allow 30000:32767/tcp
 sudo ufw --force enable
@@ -279,11 +281,11 @@ sudo ufw status numbered
 ## Lab 5: Kernel Module Blacklisting (`sctp`, `dccp`, `rds`) & `sysctl` Hardening
 
 ### 5.1 Scenario
-Harden `worker-01` by unloading and permanently blacklisting the `sctp` and `rds` kernel modules, and configuring kernel sysctls so `kubelet` runs with `protectKernelDefaults: true`.
+Harden `cks-worker1` by unloading and permanently blacklisting the `sctp` and `rds` kernel modules, and configuring kernel sysctls so `kubelet` runs with `protectKernelDefaults: true`.
 
 ### 5.2 Execution Steps
 ```bash
-ssh worker-01
+ssh cks-worker1
 
 # 1. Unload kernel modules if currently loaded
 sudo modprobe -r sctp rds || true
@@ -331,11 +333,11 @@ systemctl is-active kubelet
 ## Lab 6: CIS Control-Plane File Permissions & SUID Binary Remediation
 
 ### 6.1 Scenario
-A CIS `kube-bench` scan on `cp-01` failed because `/etc/kubernetes/manifests/*.yaml` and `/etc/kubernetes/admin.conf` have world-readable permissions (`0644`), and a container image `custom-runner` contains dangerous `SUID` bits on `/bin/mount` and `/usr/bin/passwd`.
+A CIS `kube-bench` scan on `cks-cp1` (`cp-01`) failed because `/etc/kubernetes/manifests/*.yaml` and `/etc/kubernetes/admin.conf` have world-readable permissions (`0644`), and a container image `custom-runner` contains dangerous `SUID` bits on `/bin/mount` and `/usr/bin/passwd`.
 
 ### 6.2 Execution Steps
 ```bash
-# Part A: Fix Control-Plane File Ownership and Permissions on cp-01
+# Part A: Fix Control-Plane File Ownership and Permissions on cks-cp1
 sudo chown root:root /etc/kubernetes/manifests/*.yaml /etc/kubernetes/*.conf
 sudo chmod 0600 /etc/kubernetes/manifests/*.yaml /etc/kubernetes/*.conf
 sudo chown -R root:root /etc/kubernetes/pki/

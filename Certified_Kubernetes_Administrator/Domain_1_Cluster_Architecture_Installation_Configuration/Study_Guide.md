@@ -293,10 +293,13 @@ rules:
 
 ---
 
-## 3. Cluster Installation & Configuration with `kubeadm`
+## 3. Cluster Installation & Configuration with `kubeadm` (on DigitalOcean Droplets)
 
-### 3.1 Host Prerequisites (All Nodes)
-Before running `kubeadm init` or `kubeadm join`, every Linux host requires:
+> [!TIP]
+> See the full automated **`doctl` + `cloud-init`** provisioning script in the [DigitalOcean Droplet Lab Setup Guide](../DigitalOcean_Droplet_Lab_Guide.md).
+
+### 3.1 Host Prerequisites (All DigitalOcean Droplets)
+Before running `kubeadm init` or `kubeadm join`, every Ubuntu 24.04 LTS Droplet requires:
 1. **Swap Disabled:** `kubelet` fails to start if swap is enabled (unless explicitly configured otherwise).
    ```bash
    sudo swapoff -a
@@ -320,15 +323,26 @@ Before running `kubeadm init` or `kubeadm join`, every Linux host requires:
    ```
 3. **Container Runtime (`containerd`) Installed & Configured with `SystemdCgroup = true`.**
 4. **`kubeadm`, `kubelet`, and `kubectl` Installed & Version-Held (`apt-mark hold`).**
+5. **DigitalOcean Dual-Interface (`eth0` vs `eth1`) Kubelet Binding:**
+   DigitalOcean Droplets attach the public internet IP to `eth0` and the private DigitalOcean VPC IP (`10.116.0.x`) to **`eth1`**. Always bind `kubelet` to `eth1` so `InternalIP` traffic stays inside your private VPC:
+   ```bash
+   VPC_IP=$(ip -4 addr show eth1 | awk '/inet / {print $2}' | cut -d/ -f1)
+   echo "KUBELET_EXTRA_ARGS=--node-ip=${VPC_IP}" | sudo tee /etc/default/kubelet
+   sudo systemctl daemon-reload && sudo systemctl restart kubelet
+   ```
 
 ### 3.2 Initializing the Control Plane (`kubeadm init`)
 ```bash
+# Detect the DigitalOcean Droplet Private VPC IP on eth1 (e.g., 10.116.0.10)
+CP_VPC_IP=$(ip -4 addr show eth1 | awk '/inet / {print $2}' | cut -d/ -f1)
+
 sudo kubeadm init \
-  --apiserver-advertise-address=192.168.56.10 \
-  --control-plane-endpoint="k8s-api.example.com:6443" \
+  --apiserver-advertise-address="${CP_VPC_IP}" \
+  --apiserver-cert-extra-sans="${CP_VPC_IP}" \
+  --control-plane-endpoint="${CP_VPC_IP}:6443" \
   --pod-network-cidr=192.168.0.0/16 \
   --service-cidr=10.96.0.0/12 \
-  --kubernetes-version=v1.31.0
+  --kubernetes-version=v1.31.2
 
 # Configure kubectl for the regular user:
 mkdir -p $HOME/.kube
@@ -338,17 +352,17 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 - **Alternative Declarative Config (`kubeadm init --config kubeadm-config.yaml`):**
   You can generate a default config template with `kubeadm config print init-defaults > kubeadm-config.yaml`.
 
-### 3.3 Joining Worker Nodes & Additional Control Plane Nodes
+### 3.3 Joining Worker Droplets & Additional Control Plane Droplets
 If the bootstrap token expired (tokens expire after 24 hours by default):
 ```bash
-# On Control Plane: generate a new bootstrap token and print the full join command
+# On Control Plane (cka-cp1): generate a new bootstrap token and print the full join command
 kubeadm token create --print-join-command
 
-# Output to run on Worker Node:
-sudo kubeadm join 192.168.56.10:6443 --token abcdef.0123456789abcdef \
+# Output to run on Worker Droplets (cka-worker1, cka-worker2):
+sudo kubeadm join 10.116.0.10:6443 --token abcdef.0123456789abcdef \
   --discovery-token-ca-cert-hash sha256:8f9d...
 
-# For joining an additional Control Plane node in an HA cluster:
+# For joining an additional Control Plane Droplet in an HA cluster:
 sudo kubeadm init phase upload-certs --upload-certs
 kubeadm token create --print-join-command --certificate-key <64-char-hex-key>
 ```

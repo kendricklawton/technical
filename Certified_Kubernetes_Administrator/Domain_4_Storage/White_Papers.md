@@ -1,7 +1,7 @@
 # Domain 4: Storage — Essential Documentation & Technical Reference Guide
 
 > **Blueprint Weight:** 10% of Certified Kubernetes Administrator (CKA)  
-> **Core Objective:** Configure and manage PersistentVolumes (PV), PersistentVolumeClaims (PVC), StorageClasses, dynamic provisioning, volume expansion, access modes, reclaim policies, and VolumeSnapshots.
+> **Core Objective:** Configure and manage PersistentVolumes (PV), PersistentVolumeClaims (PVC), StorageClasses, dynamic provisioning, volume expansion, access modes, reclaim policies, and VolumeSnapshots on DigitalOcean Droplets.
 
 ---
 
@@ -11,9 +11,9 @@
 * **Canonical Scope:** Decoupling storage lifecycle from Pod and Node lifecycles.
 * **Volume Lifecycle & Access Modes:**
   * **Access Modes:**
-    * `ReadWriteOnce` (RWO): Read-write by a single node.
+    * `ReadWriteOnce` (RWO): Read-write by a single node (e.g., DigitalOcean Block Storage `dobs.csi.digitalocean.com`, `rancher.io/local-path`).
     * `ReadOnlyMany` (ROX): Read-only by many nodes.
-    * `ReadWriteMany` (RWX): Read-write by many nodes (NFS, Ceph, EFS).
+    * `ReadWriteMany` (RWX): Read-write by many nodes (NFS over DigitalOcean VPC `eth1`, CephFS).
     * `ReadWriteOncePod` (RWOP): Read-write by a single pod across the entire cluster.
   * **Reclaim Policies:**
     * `Retain`: Manual reclamation; PV remains in `Released` status after PVC deletion.
@@ -22,14 +22,14 @@
 ### 1.2 [Dynamic Volume Provisioning & StorageClasses](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
 * **Canonical Scope:** On-demand volume allocation triggered by PVC creation.
 * **Key StorageClass Parameters:**
-  * `provisioner`: The CSI driver plugin (e.g., `ebs.csi.aws.com`, `pd.csi.storage.gke.io`).
+  * `provisioner`: The CSI driver plugin (e.g., `dobs.csi.digitalocean.com` for DigitalOcean Block Storage, `rancher.io/local-path` for local Droplet NVMe storage, `nfs.csi.k8s.io` for NFS).
   * `volumeBindingMode`:
-    * `Immediate`: Volume created as soon as PVC is created (can lead to topology mismatches).
-    * `WaitForFirstConsumer`: Delays volume creation until the Pod using the PVC is scheduled onto a node, guaranteeing storage is provisioned in the same Availability Zone.
+    * `Immediate`: Volume created as soon as PVC is created (can lead to topology/node mismatches).
+    * `WaitForFirstConsumer`: Delays volume creation until the Pod using the PVC is scheduled onto a Droplet, guaranteeing storage is provisioned in the matching region/node (`nyc3` / `cka-worker1`).
   * `allowVolumeExpansion: true`: Enables online resizing of PVCs.
 
 ### 1.3 [Volume Snapshots & Restore](https://kubernetes.io/docs/concepts/storage/volume-snapshots/)
-* **Canonical Scope:** Standardized point-in-time storage snapshots via CSI.
+* **Canonical Scope:** Standardized point-in-time storage snapshots via CSI (`dobs.csi.digitalocean.com` or `csi-driver-host-path`).
 * **Resources:** `VolumeSnapshotClass`, `VolumeSnapshot`, and restoring via `dataSource` in PVC.
 
 ---
@@ -50,6 +50,6 @@
 
 - [ ] Read *Persistent Volumes, PVCs, and StorageClasses*
 - [ ] Read *Dynamic Volume Provisioning & StorageClasses*
-- [ ] Practice creating PV/PVC pairings with RWO, RWX, and Retain policies
+- [ ] Practice creating PV/PVC pairings with RWO, RWX, and Retain policies on your DigitalOcean Droplets
 - [ ] Test `volumeBindingMode: WaitForFirstConsumer` scheduling behavior
 - [ ] Perform online PVC volume expansion drill

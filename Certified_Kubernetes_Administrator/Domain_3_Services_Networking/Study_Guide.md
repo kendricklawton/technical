@@ -1,7 +1,7 @@
 # Domain 3: Services & Networking — In-Depth Master Study Guide
 
 **Exam Weight:** 20% of CKA  
-**Target Mastery:** The Kubernetes Network Model, CNI Plugins (Calico, Flannel, Cilium), kube-proxy internals (`iptables` vs `ipvs` vs eBPF), ClusterIP/NodePort/LoadBalancer/ExternalName/Headless Services, EndpointSlices, CoreDNS architecture and custom stub domains, Ingress Controllers and path/host routing, Kubernetes Gateway API (`GatewayClass`, `Gateway`, `HTTPRoute`, `GRPCRoute`, `ReferenceGrant`), and complete NetworkPolicy ingress/egress rules.
+**Target Mastery:** The Kubernetes Network Model, CNI Plugins (Calico, Flannel, Cilium) on DigitalOcean Droplet VPC interfaces (`eth1`), kube-proxy internals (`iptables` vs `ipvs` vs eBPF), ClusterIP/NodePort/LoadBalancer/ExternalName/Headless Services, EndpointSlices, CoreDNS architecture and custom stub domains, Ingress Controllers and path/host routing, Kubernetes Gateway API (`GatewayClass`, `Gateway`, `HTTPRoute`, `GRPCRoute`, `ReferenceGrant`), and complete NetworkPolicy ingress/egress rules.
 
 ---
 
@@ -21,14 +21,14 @@ Every compliant Kubernetes cluster must satisfy three foundational principles:
 
 ```mermaid
 flowchart TD
-    subgraph Node1["Worker Node 1 (192.168.1.10)"]
-        subgraph PodNetns1["Pod Netns (10.244.1.5)"]
+    subgraph Node1["Droplet cka-worker1 (eth1: 10.116.0.11)"]
+        subgraph PodNetns1["Pod Netns (192.168.1.5)"]
             eth0_pod["eth0 (Pod Interface)"]
         end
         veth1["veth_pod1 (Host Netns)"]
         Bridge1["cbr0 / cni0 Bridge / eBPF Engine"]
         HostRouting1["Host Kernel Route Table"]
-        Physical1["Physical eth0 (192.168.1.10)"]
+        Physical1["DigitalOcean VPC eth1 (10.116.0.11)"]
 
         eth0_pod <--> veth1
         veth1 <--> Bridge1
@@ -36,12 +36,12 @@ flowchart TD
         HostRouting1 <--> Physical1
     end
 
-    subgraph Node2["Worker Node 2 (192.168.1.11)"]
-        Physical2["Physical eth0 (192.168.1.11)"]
+    subgraph Node2["Droplet cka-worker2 (eth1: 10.116.0.12)"]
+        Physical2["DigitalOcean VPC eth1 (10.116.0.12)"]
         HostRouting2["Host Kernel Route Table"]
         Bridge2["cbr0 / cni0 Bridge / eBPF Engine"]
         veth2["veth_pod2 (Host Netns)"]
-        subgraph PodNetns2["Pod Netns (10.244.2.8)"]
+        subgraph PodNetns2["Pod Netns (192.168.2.8)"]
             eth0_pod2["eth0 (Pod Interface)"]
         end
 
@@ -51,13 +51,21 @@ flowchart TD
         veth2 <--> eth0_pod2
     end
 
-    Physical1 <==>|VXLAN / Geneve / Direct BGP Routing| Physical2
+    Physical1 <==>|"VXLAN / Geneve / Direct BGP over DO VPC eth1"| Physical2
 ```
 
-### CNI Provider Comparison
-- **Flannel:** Simple overlay network using VXLAN or host-gw. Does **NOT** support NetworkPolicies!
-- **Calico:** Uses BGP (Border Gateway Protocol) for pure L3 routing without encapsulation overhead (or IP-in-IP / VXLAN overlay). Full NetworkPolicy and Calico GlobalNetworkPolicy engine.
-- **Cilium:** eBPF-powered networking, observability, and security. Evaluates network policies directly at Linux socket/kernel layers without iptables connection-tracking overhead. Supports L7 application-aware policies (HTTP method/path, DNS filtering).
+### CNI Provider Comparison & DigitalOcean Droplet `eth1` Binding
+- **Flannel:** Simple overlay network using VXLAN (`8472/udp`) or `host-gw`. Does **NOT** support NetworkPolicies! (On DigitalOcean Droplets, pass `--iface=eth1` in the `kube-flannel` args).
+- **Calico:** Uses BGP (Border Gateway Protocol) for pure L3 routing or IP-in-IP / VXLAN overlay. Full NetworkPolicy and Calico GlobalNetworkPolicy engine.
+  - **DigitalOcean Droplet Binding:** Because `eth0` holds the public IP and an internal `10.x.x.x` anchor IP, always bind Calico to the private DigitalOcean VPC interface (`eth1`):
+    ```bash
+    kubectl set env daemonset/calico-node -n kube-system IP_AUTODETECTION_METHOD=interface=eth1
+    ```
+- **Cilium:** eBPF-powered networking, observability, and security. Evaluates network policies directly at Linux socket/kernel layers without iptables connection-tracking overhead. Supports L7 application-aware policies (HTTP method/path, DNS filtering) and Gateway API.
+  - **DigitalOcean Droplet Binding:**
+    ```bash
+    cilium install --version 1.16.3 --set devices=eth1
+    ```
 
 ---
 
@@ -68,9 +76,9 @@ flowchart TD
 | Service Type | IP Allocation | Routing Mechanism | Node Port Range | Primary Use Case |
 |---|---|---|---|---|
 | **ClusterIP** | Virtual VIP from `service-cluster-ip-range` (e.g., `10.96.0.0/12`). | iptables DNAT or ipvs virtual server. Never responds to ping (ICMP)! | None | Internal East-West cluster communication. |
-| **NodePort** | ClusterIP + opens static port on every cluster node. | `<NodeIP>:<NodePort>` DNATs to ClusterIP/Endpoint. | `30000–32767` | Bare-metal external entry, legacy integrations. |
-| **LoadBalancer** | Superset of NodePort + ClusterIP. | Calls Cloud Provider (AWS NLB/ALB, GCP, Azure) to provision external load balancer pointing to NodePorts or Pod IPs. | `30000–32767` (or cloud provider bypass) | Direct North-South TCP/UDP external ingress. |
-| **ExternalName** | No IP, no proxying, no EndpointSlice. | CoreDNS returns CNAME pointing to external FQDN (`spec.externalName`). | None | Aliasing external databases or third-party APIs. |
+| **NodePort** | ClusterIP + opens static port on every cluster node. | `<NodeIP>:<NodePort>` DNATs to ClusterIP/Endpoint. | `30000–32767` | Direct node entry, self-managed DigitalOcean Droplet ingress. |
+| **LoadBalancer** | Superset of NodePort + ClusterIP. | Calls Cloud Provider (`digitalocean-cloud-controller-manager` for DO Load Balancers, or MetalLB) to provision external LB pointing to NodePorts. | `30000–32767` (or cloud provider bypass) | Direct North-South TCP/UDP external ingress. |
+| **ExternalName** | No IP, no proxying, no EndpointSlice. | CoreDNS returns CNAME pointing to external FQDN (`spec.externalName`). | None | Aliasing external databases (e.g., DigitalOcean Managed DB) or third-party APIs. |
 | **Headless** (`clusterIP: None`) | No ClusterIP allocated. No kube-proxy load balancing. | DNS returns `A`/`AAAA` records containing Pod IPs directly (or SRV records for named ports). | None | StatefulSets (Cassandra, Kafka, Elastic), peer discovery. |
 
 ### kube-proxy Operating Modes
@@ -150,7 +158,7 @@ For a service `order-api` in namespace `ecommerce` with port `http` (8080):
 
 ## 5. Ingress Controllers & Ingress Resources
 
-An Ingress Controller (e.g. `ingress-nginx`, Traefik, Envoy Gateway, AWS Load Balancer Controller) operates as a reverse proxy interpreting `networking.k8s.io/v1` `Ingress` resources.
+An Ingress Controller (e.g. `ingress-nginx`, Traefik, Envoy Gateway, Cilium Ingress) operates as a reverse proxy interpreting `networking.k8s.io/v1` `Ingress` resources.
 
 ### Complete Production Ingress Spec with TLS & Path Rewriting
 ```yaml
@@ -201,7 +209,7 @@ spec:
 ## 6. Kubernetes Gateway API (The Modern CKA Exam Standard)
 
 The **Gateway API** (`gateway.networking.k8s.io/v1`) decouples routing into discrete persona roles:
-1. **`GatewayClass`:** Defined by Cluster Infrastructure Provider (e.g. Envoy, Istio, Cilium, AWS).
+1. **`GatewayClass`:** Defined by Cluster Infrastructure Provider (e.g. Envoy, Istio, Cilium, NGINX).
 2. **`Gateway`:** Defined by Cluster Operator (binds IP addresses, listening ports, TLS certificates).
 3. **`HTTPRoute` / `GRPCRoute` / `TCPRoute`:** Defined by Application Developers (path matching, header manipulation, traffic splitting).
 
@@ -352,4 +360,4 @@ from:
    - Symptom: Pod cannot resolve any hostnames after applying an Egress NetworkPolicy.
    - Fix: Always include an explicit Egress rule permitting UDP and TCP traffic on port 53 to namespace `kube-system`!
 4. **NodePort Connection Refused from External IP:**
-   - Check if `externalTrafficPolicy: Local` is set on a service and whether the node you are hitting actually hosts a backing pod replica. If not, hit a node that does, or change to `Cluster`.
+   - Check if `externalTrafficPolicy: Local` is set on a service and whether the Droplet you are hitting actually hosts a backing pod replica. If not, hit a Droplet that does, or change to `Cluster`.

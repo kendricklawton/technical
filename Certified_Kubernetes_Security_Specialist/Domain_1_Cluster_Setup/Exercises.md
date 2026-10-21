@@ -1,6 +1,6 @@
 # CKS Domain 1: Cluster Setup — Hands-On Security Labs
 
-These 6 realistic, performance-based labs simulate the exact scenarios tested in **Domain 1 (Cluster Setup - 10%)** of the Certified Kubernetes Security Specialist (CKS) exam.
+These 6 realistic, performance-based labs simulate the exact scenarios tested in **Domain 1 (Cluster Setup - 10%)** of the Certified Kubernetes Security Specialist (CKS) exam on your **DigitalOcean Droplet** cluster (`cks-cp1`, `cks-worker1`, `cks-worker2`).
 
 ---
 
@@ -118,13 +118,13 @@ kubectl -n payments exec deploy/frontend -- nc -zv -w 2 ledger-db-svc 5432
 
 ---
 
-## Lab 2: Protecting Cloud Metadata Server Endpoints (`169.254.169.254/32`)
+## Lab 2: Protecting DigitalOcean Droplet & Cloud Metadata Server Endpoints (`169.254.169.254/32`)
 
 ### Scenario
-In the `public-workers` namespace, untrusted tenant workloads run on cloud VMs that expose the Cloud Instance Metadata Service (IMDS) at `169.254.169.254`.
+In the `public-workers` namespace, untrusted tenant workloads run on DigitalOcean Droplets that expose the DigitalOcean Metadata API at `http://169.254.169.254/metadata/v1.json` (and `/metadata/v1/user-data`).
 1. Create a `NetworkPolicy` named `restrict-metadata-server` in the `public-workers` namespace.
 2. It must apply to all Pods labeled `trust-level: untrusted`.
-3. Those Pods must be allowed to make outbound connections to any IP address (`0.0.0.0/0`), **except** the cloud metadata server IP `169.254.169.254/32` and the internal management subnet `10.96.0.0/12`.
+3. Those Pods must be allowed to make outbound connections to any IP address (`0.0.0.0/0`), **except** the DigitalOcean / cloud metadata server IP `169.254.169.254/32` and the internal management subnet `10.96.0.0/12`.
 
 ### Step-by-Step Solution
 
@@ -150,13 +150,13 @@ spec:
               - 10.96.0.0/12
 ```
 
-Apply and verify:
+Apply and verify on your DigitalOcean Droplet:
 ```bash
 kubectl apply -f /root/metadata-netpol.yaml
 kubectl get netpol -n public-workers restrict-metadata-server -o yaml
 
-# Test from an untrusted pod: connection to 169.254.169.254 must time out!
-kubectl -n public-workers exec pod/worker-1 -- curl -m 2 http://169.254.169.254/latest/meta-data/
+# Test from an untrusted pod on your DigitalOcean Droplet: connection to 169.254.169.254 must time out!
+kubectl -n public-workers exec pod/worker-1 -- curl -m 2 http://169.254.169.254/metadata/v1.json
 ```
 
 ---
@@ -164,7 +164,7 @@ kubectl -n public-workers exec pod/worker-1 -- curl -m 2 http://169.254.169.254/
 ## Lab 3: CIS Kubernetes Benchmark Remediation with `kube-bench`
 
 ### Scenario
-Run `kube-bench` on `controlplane` and `node01` and remediate the following CIS Benchmark security findings:
+Run `kube-bench` on `cks-cp1` (`controlplane`) and `cks-worker1` (`node01`) and remediate the following CIS Benchmark security findings:
 1. **Control Plane (`kube-apiserver`)**:
    * Disable anonymous authentication.
    * Ensure authorization mode includes `Node,RBAC` and does **not** include `AlwaysAllow`.
@@ -173,7 +173,7 @@ Run `kube-bench` on `controlplane` and `node01` and remediate the following CIS 
 2. **Control Plane (`etcd`)**:
    * Ensure client certificate authentication is enabled (`--client-cert-auth=true`).
    * Ensure the `/var/lib/etcd` data directory has permissions `700` and is owned by `etcd:etcd`.
-3. **Worker Node (`node01` `kubelet`)**:
+3. **Worker Node (`cks-worker1` / `node01` `kubelet`)**:
    * Disable anonymous authentication on the kubelet.
    * Change kubelet authorization mode from `AlwaysAllow` to `Webhook`.
    * Ensure the read-only port (`10255`) is disabled (`readOnlyPort: 0`).
@@ -208,10 +208,10 @@ chown -R etcd:etcd /var/lib/etcd
 stat -c "%a %U:%G %n" /var/lib/etcd
 ```
 
-#### Step 4: Remediate `kubelet` on `node01`
-SSH to `node01` and edit `/var/lib/kubelet/config.yaml`:
+#### Step 4: Remediate `kubelet` on `cks-worker1` (`node01`)
+SSH to `cks-worker1` (`10.116.0.11`) and edit `/var/lib/kubelet/config.yaml`:
 ```bash
-ssh node01
+ssh cks-worker1
 cp /var/lib/kubelet/config.yaml /root/kubelet-config.yaml.bak
 vi /var/lib/kubelet/config.yaml
 ```
@@ -332,7 +332,7 @@ rm -f /opt/candidate/k8s-v1.31.0/kubeadm /opt/candidate/k8s-v1.31.0/kubelet
 ## Lab 6: Cilium Layer-7 HTTP & FQDN Egress Policy (`CiliumNetworkPolicy`)
 
 ### Scenario
-Your cluster uses Cilium as its CNI. In the `analytics` namespace, Pods labeled `app: webhook-sender` need to:
+Your cluster uses Cilium as its CNI on DigitalOcean VPC interface `eth1`. In the `analytics` namespace, Pods labeled `app: webhook-sender` need to:
 1. Resolve DNS names via `kube-dns` in `kube-system`.
 2. Make outbound HTTPS (`TCP 443`) requests **only** to `hooks.slack.com` and any subdomain matching `*.datadoghq.com`.
 3. Receive inbound HTTP (`TCP 8080`) requests from Pods labeled `app: aggregator` in the `analytics` namespace, **only** for `POST /api/v2/events` when HTTP header `X-Api-Version: 2` is present.

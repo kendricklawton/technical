@@ -2,7 +2,7 @@
 
 > [!IMPORTANT]
 > **Exam Weight: 15%**
-> Containers are **not** virtual machines—they are isolated Linux processes sharing the underlying Worker Node's Linux kernel. If a container escapes its namespace or exploits a kernel vulnerability, the security posture of the host OS determines whether the attacker can compromise the entire node and cluster. On the CKS exam, expect 2–3 hands-on tasks from Domain 3: auditing open network ports (`ss -tulpn` / `lsof`) and disabling rogue systemd services, configuring `ufw` host firewalls, loading **AppArmor** profiles onto worker nodes (`apparmor_parser -q`) and attaching them to Pods, configuring custom **Seccomp** syscall filters in `/var/lib/kubelet/seccomp/profiles/`, and dropping **Linux Capabilities** (`drop: ["ALL"]`, `add: ["NET_BIND_SERVICE"]`).
+> Containers are **not** virtual machines—they are isolated Linux processes sharing the underlying Worker Node's Linux kernel. If a container escapes its namespace or exploits a kernel vulnerability, the security posture of the host OS determines whether the attacker can compromise the entire node and cluster. On the CKS exam, expect 2–3 hands-on tasks from Domain 3: auditing open network ports (`ss -tulpn` / `lsof`) and disabling rogue systemd services, configuring `ufw` host firewalls across DigitalOcean Droplet interfaces (`eth0` WAN vs `eth1` VPC), loading **AppArmor** profiles onto worker nodes (`apparmor_parser -q`) and attaching them to Pods, configuring custom **Seccomp** syscall filters in `/var/lib/kubelet/seccomp/profiles/`, and dropping **Linux Capabilities** (`drop: ["ALL"]`, `add: ["NET_BIND_SERVICE"]`).
 
 ---
 
@@ -12,10 +12,10 @@ Every unnecessary daemon, listening TCP/UDP port, SetUID binary, compiler (`gcc`
 
 ```mermaid
 flowchart TD
-    Host["Hardened Kubernetes Node (Ubuntu 22.04 LTS)"]
-    Ports["1. Network Surface<br>ss -tulpn / lsof -i<br>ufw firewall rules"]
+    Host["Hardened Kubernetes Droplet (Ubuntu 24.04 LTS)"]
+    Ports["1. Network Surface<br>ss -tulpn / lsof -i<br>ufw firewall rules (eth0 WAN vs eth1 VPC)"]
     Services["2. Systemd Daemons<br>systemctl disable --now<br>apt-get purge unused pkgs"]
-    SSH["3. IAM & SSH<br>/etc/ssh/sshd_config<br>PermitRootLogin no"]
+    SSH["3. IAM & SSH<br>/etc/ssh/sshd_config<br>PermitRootLogin prohibit-password / no"]
     Kernel["4. Kernel Isolation<br>AppArmor + Seccomp +<br>Capabilities + sysctl"]
 
     Host --> Ports
@@ -26,7 +26,7 @@ flowchart TD
 
 ### 1.1 Identifying Open Network Ports & Owning Processes
 
-A classic CKS exam task states: *"Worker node `node01` is running an unnecessary service listening on TCP port `9090` (or `21`/`25`/`111`). Identify the offending process, stop and disable its systemd service, and remove its binary or package."*
+A classic CKS exam task states: *"Worker node `cks-worker1` (`node01`) is running an unnecessary service listening on TCP port `9090` (or `21`/`25`/`111`). Identify the offending process, stop and disable its systemd service, and remove its binary or package."*
 
 Memorize the exact flags for `ss`, `netstat`, and `lsof`:
 
@@ -72,25 +72,29 @@ When configuring a host firewall (`ufw` on Ubuntu) on a Control Plane or Worker 
 | **Worker Node** | TCP | **`10250`** | `kubelet` | Kubelet API |
 | **Worker Node** | TCP | **`10256`** | `kube-proxy` | kube-proxy health check server |
 | **Worker Node** | TCP/UDP | **`30000-32767`** | `kube-proxy` | Default `NodePort` Service range |
-| **CNI (Calico/Flannel/Cilium)** | TCP / UDP | **`179` (BGP), `4789` / `8472` (UDP VXLAN)** | CNI DaemonSet | Pod-to-Pod cross-node overlay networking |
+| **CNI (Calico/Flannel/Cilium)** | TCP / UDP | **`179` (BGP), `4240` (Cilium health), `4789` / `8472` (UDP VXLAN)** | CNI DaemonSet | Pod-to-Pod cross-node overlay networking |
 
-#### Configuring `ufw` (Uncomplicated Firewall) on Ubuntu Nodes
+#### Configuring `ufw` (Uncomplicated Firewall) on Ubuntu DigitalOcean Droplets
+On DigitalOcean Droplets, `eth0` is the public internet interface and `eth1` (`10.116.0.0/20`) is the private VPC interface:
 ```bash
 # Check current UFW status
 ufw status verbose
 
-# Allow SSH first so you NEVER lock yourself out of the node!
+# Allow SSH first so you NEVER lock yourself out of the Droplet!
 ufw allow 22/tcp
 
-# Allow required Control Plane ports
+# Allow required Control Plane ports (or scope them to eth1 / VPC CIDR 10.116.0.0/20)
 ufw allow 6443/tcp
 ufw allow 2379:2380/tcp
 ufw allow 10250/tcp
 ufw allow 10259/tcp
 ufw allow 10257/tcp
 
-# Allow traffic from a specific Worker Node IP (e.g., 192.168.100.12)
-ufw allow from 192.168.100.12 to any port 6443 proto tcp
+# On DigitalOcean Droplets: allow all internal cluster traffic over eth1 (VPC 10.116.0.0/20)
+ufw allow in on eth1 from 10.116.0.0/20
+
+# Allow traffic from a specific Worker Droplet VPC IP (e.g., 10.116.0.11)
+ufw allow from 10.116.0.11 to any port 6443 proto tcp
 
 # Deny a specific port explicitly
 ufw deny 9090/tcp
@@ -178,7 +182,7 @@ sysctl --system
 
 ## 2. Linux Kernel Security Modules: AppArmor (MAC)
 
-Standard Linux file permissions (`rwx`) are **Discretionary Access Control (DAC)**—if a process runs as `root` (UID 0), it can read or write almost anything. **AppArmor** (Application Armor) is a Linux Security Module (LSM) enabled by default on Ubuntu/Debian that enforces **Mandatory Access Control (MAC)**: it restricts **specific programs/containers** to a whitelist of file paths, network sockets, and Linux capabilities, regardless of whether the process runs as `root`!
+Standard Linux file permissions (`rwx`) are **Discretionary Access Control (DAC)**—if a process runs as `root` (UID 0), it can read or write almost anything. **AppArmor** (Application Armor) is a Linux Security Module (LSM) enabled by default on Ubuntu/Debian DigitalOcean Droplets that enforces **Mandatory Access Control (MAC)**: it restricts **specific programs/containers** to a whitelist of file paths, network sockets, and Linux capabilities, regardless of whether the process runs as `root`!
 
 ### 2.1 AppArmor Operating Modes & Host Commands
 
@@ -207,7 +211,7 @@ apparmor_parser -R /etc/apparmor.d/k8s-deny-write
 
 > [!CAUTION]
 > **Three Critical AppArmor Exam Traps!**
-> 1. **Load on the Correct Worker Node!** AppArmor profiles are loaded into the local node's Linux kernel. If your Pod will be scheduled onto `node01`, you **must** copy the profile to `node01:/etc/apparmor.d/` and run `apparmor_parser -q /etc/apparmor.d/<file>` **on `node01`** (not just on `controlplane`)!
+> 1. **Load on the Correct Worker Node!** AppArmor profiles are loaded into the local node's Linux kernel. If your Pod will be scheduled onto `cks-worker1` (`node01`), you **must** copy the profile to `cks-worker1:/etc/apparmor.d/` and run `apparmor_parser -q /etc/apparmor.d/<file>` **on `cks-worker1`** (not just on `cks-cp1`)!
 > 2. **Use the Profile Name Inside the File, NOT the Filename!** Look inside the profile file for `profile <PROFILE_NAME> flags=(...) {`. Even if the file on disk is named `/etc/apparmor.d/custom_nginx_profile`, if the line inside says `profile nginx-secure-v1 flags=(attach_disconnected,mediate_deleted) {`, you **must** specify `nginx-secure-v1` in your Pod manifest!
 > 3. **Verify with `aa-status`!** Always run `aa-status | grep <profile-name>` on the worker node to confirm the exact profile name is listed under `profiles are in enforce mode`.
 
@@ -358,7 +362,7 @@ Blocks all syscalls by default (`SCMP_ACT_ERRNO`) and only allows the listed `na
 > [!IMPORTANT]
 > **Critical Seccomp Path Rule: `/var/lib/kubelet/seccomp/`**
 > The `kubelet` always resolves `localhostProfile` **relative to `/var/lib/kubelet/seccomp/`** on the worker node!
-> * If you place your file at `/var/lib/kubelet/seccomp/profiles/audit.json` on `node01`, then in your Pod YAML you must write:
+> * If you place your file at `/var/lib/kubelet/seccomp/profiles/audit.json` on `cks-worker1` (`node01`), then in your Pod YAML you must write:
 >   `localhostProfile: profiles/audit.json` (NEVER write `/var/lib/kubelet/seccomp/profiles/audit.json`!).
 > * If you place your file directly at `/var/lib/kubelet/seccomp/audit.json`, you write:
 >   `localhostProfile: audit.json`.

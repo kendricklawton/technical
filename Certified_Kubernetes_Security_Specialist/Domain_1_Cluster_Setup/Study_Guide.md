@@ -2,7 +2,8 @@
 
 > [!IMPORTANT]
 > **Exam Weight: 10%**
-> Domain 1 establishes the perimeter and network foundation of a hardened Kubernetes cluster. On the CKS exam, you can expect 2–3 tasks directly from this domain: writing multi-tier `NetworkPolicy` or `CiliumNetworkPolicy` manifests (including blocking access to the Cloud Metadata API at `169.254.169.254/32`), fixing CIS Kubernetes Benchmark failures reported by `kube-bench` across the Control Plane, Worker Nodes, and `etcd`, configuring an `Ingress` resource with a `kubernetes.io/tls` Secret and HTTPS redirection, and verifying Kubernetes platform binary integrity via `sha512sum`.
+> Domain 1 establishes the perimeter and network foundation of a hardened Kubernetes cluster. On the CKS exam, you can expect 2–3 tasks directly from this domain: writing multi-tier `NetworkPolicy` or `CiliumNetworkPolicy` manifests (including blocking access to the DigitalOcean / Cloud Metadata API at `169.254.169.254/32`), fixing CIS Kubernetes Benchmark failures reported by `kube-bench` across the Control Plane, Worker Nodes, and `etcd`, configuring an `Ingress` resource with a `kubernetes.io/tls` Secret and HTTPS redirection, and verifying Kubernetes platform binary integrity via `sha512sum`.
+> See the [DigitalOcean Droplet CKS Lab Guide](../DigitalOcean_Droplet_Lab_Guide.md) for provisioning your `cks-cp1`, `cks-worker1`, and `cks-worker2` Droplets with Cilium on `eth1`.
 
 ---
 
@@ -16,7 +17,7 @@ A standard Kubernetes `NetworkPolicy` (`networking.k8s.io/v1`) operates at **OSI
 
 > [!WARNING]
 > **CNI Plugin Prerequisite**
-> `NetworkPolicy` resources are purely declarative API objects; the Kubernetes control plane does nothing to enforce them unless your Container Network Interface (CNI) plugin supports policy enforcement (e.g., **Calico**, **Cilium**, **Weave Net**, **Antrea**). Notably, standalone **Flannel** does *not* enforce NetworkPolicies (unless paired with Calico as a policy engine via Canal).
+> `NetworkPolicy` resources are purely declarative API objects; the Kubernetes control plane does nothing to enforce them unless your Container Network Interface (CNI) plugin supports policy enforcement (e.g., **Calico**, **Cilium**, **Weave Net**, **Antrea**). Notably, standalone **Flannel** does *not* enforce NetworkPolicies (unless paired with Calico as a policy engine via Canal). On DigitalOcean Droplets, ensure Cilium (`--set devices=eth1`) or Calico (`IP_AUTODETECTION_METHOD=interface=eth1`) is bound to the private VPC interface `eth1`.
 
 Key behavioral rules of `NetworkPolicy`:
 1. **Non-Isolated by Default**: Until at least one `NetworkPolicy` selects a Pod for a given direction (`Ingress` or `Egress`), all traffic in that direction is allowed.
@@ -30,7 +31,7 @@ flowchart LR
     Ingress -->|TCP 8080| FE["Frontend Pod<br>(app=frontend)"]
     FE -->|TCP 5432| DB["Database Pod<br>(app=postgres)"]
     FE -->|UDP/TCP 53| DNS["CoreDNS<br>(kube-system)"]
-    FE -.->|BLOCKED by ipBlock| Meta["Cloud Metadata<br>169.254.169.254/32"]
+    FE -.->|BLOCKED by ipBlock| Meta["DigitalOcean / Cloud Metadata<br>169.254.169.254/32"]
 ```
 
 ### 1.2 The Four Fundamental Default-Deny Policies
@@ -136,11 +137,13 @@ Because `podSelector` has its own hyphen (`-`), a single accidental `-` opens yo
 | `- namespaceSelector: {matchLabels: {env: prod}}`<br>`  podSelector: {matchLabels: {app: web}}` | Pods with `app=web` **inside** namespaces with `env=prod` (**AND**). |
 | `- namespaceSelector: {}`<br>`  podSelector: {matchLabels: {app: web}}` | Pods with `app=web` in **ANY namespace** across the cluster. |
 
-### 1.4 Protecting Node Metadata & Cloud Provider Endpoints (`169.254.169.254/32`)
+### 1.4 Protecting Node Metadata & DigitalOcean / Cloud Provider Endpoints (`169.254.169.254/32`)
 
-In AWS, GCP, Azure, and OpenStack environments, cloud instances expose an Instance Metadata Service (IMDS) at the link-local IP address **`169.254.169.254`**. If a Pod is compromised and has unrestricted egress access, an attacker can query `http://169.254.169.254/latest/meta-data/iam/security-credentials/` (or GCP's `/computeMetadata/v1/instance/service-accounts/default/token`) to steal the underlying Worker Node's IAM credentials or kubelet bootstrap tokens.
+In DigitalOcean Droplet, AWS, GCP, Azure, and OpenStack environments, cloud instances expose an Instance Metadata Service (IMDS) at the link-local IP address **`169.254.169.254`**.
+- **On DigitalOcean Droplets:** Any Pod with unrestricted egress can query **`http://169.254.169.254/metadata/v1.json`** or **`http://169.254.169.254/metadata/v1/user-data`** to inspect the Droplet's full `cloud-init` user-data script, SSH public keys, VPC IP layout (`interfaces/private/0/ipv4/address`), and any bootstrap tokens passed during provisioning!
+- **On Other Clouds:** Attackers query `/latest/meta-data/iam/security-credentials/` or `/computeMetadata/v1/` to steal node credentials.
 
-To protect the cloud metadata server while still allowing Pods to reach external internet APIs, use an `ipBlock` rule with the `except` field:
+To protect the DigitalOcean / cloud metadata server while still allowing Pods to reach external internet APIs, use an `ipBlock` rule with the `except` field:
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -160,6 +163,17 @@ spec:
             cidr: 0.0.0.0/0
             except:
               - 169.254.169.254/32
+```
+
+#### Verifying Metadata Protection on Your DigitalOcean Droplet Lab
+```bash
+# Test BEFORE applying the NetworkPolicy (returns JSON metadata on a DO Droplet):
+kubectl run test-meta --rm -it --image=curlimages/curl -- \
+  curl -s http://169.254.169.254/metadata/v1.json | head -n 15
+
+# Test AFTER labeling the Pod with cloud-metadata-access=false (must time out!):
+kubectl run test-meta --rm -it --labels="cloud-metadata-access=false" --image=curlimages/curl -- \
+  curl --connect-timeout 2 http://169.254.169.254/metadata/v1.json
 ```
 
 ### 1.5 Cilium L7 & DNS-Aware NetworkPolicies (`CiliumNetworkPolicy`)
@@ -467,10 +481,10 @@ If you need to verify the installed `/usr/bin/kubelet` binary on a node against 
 ```bash
 # 1. Check the exact version of the binary
 kubelet --version
-# Output: Kubernetes v1.31.0
+# Output: Kubernetes v1.31.2
 
 # 2. Download the official SHA512 file for that exact version and architecture
-curl -sLO https://dl.k8s.io/release/v1.31.0/bin/linux/amd64/kubelet.sha512
+curl -sLO https://dl.k8s.io/release/v1.31.2/bin/linux/amd64/kubelet.sha512
 
 # 3. Compare the official hash with the local binary's hash
 cat kubelet.sha512 ; echo ""

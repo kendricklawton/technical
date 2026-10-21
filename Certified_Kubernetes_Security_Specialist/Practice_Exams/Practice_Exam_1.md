@@ -2,7 +2,7 @@
 
 **Time Limit:** 120 Minutes  
 **Passing Score:** 67% (Score Target: $\ge 75\%$)  
-**Topology:** Multi-Cluster Simulation (`controlplane`, `node01`)  
+**Topology:** DigitalOcean Droplet Multi-Node Simulation (`cks-cp1` / `controlplane`, `cks-worker1` / `node01`, `cks-worker2` / `node02`)  
 **Format:** 16 Real-World Hands-On Security Tasks with Full Solution Manifests & Verification Steps
 
 ---
@@ -24,7 +24,7 @@ Query etcd directly with `ETCDCTL_API=3 etcdctl get /registry/secrets/default/<s
 
 ### Task 2: CIS Benchmark Audit & Kube-Bench Remediation (Weight: 6%)
 **Context:** `kubectl config use-context k8s-security`  
-**Scenario:** Run `kube-bench` on the master control plane node and remediate the following failures:
+**Scenario:** Run `kube-bench` on the master control plane node (`cks-cp1`) and remediate the following failures:
 1. Ensure the `--profiling` argument is set to `false` on `kube-controller-manager`.
 2. Ensure the `--authorization-mode` argument on `kube-apiserver` includes `NodeRestriction`.
 3. Ensure file permissions on `/etc/kubernetes/manifests/kube-apiserver.yaml` are set to `600` and owned by `root:root`.
@@ -56,23 +56,23 @@ Attempt to launch a privileged pod: `kubectl run test-priv --image=nginx -n fina
 ---
 
 ### Task 4: In-Kernel Runtime Threat Detection with Falco (Weight: 7%)
-**Context:** `ssh node01`  
-**Scenario:** On worker node `node01`, configure Falco to trigger a `WARNING` alert whenever any process inside a container opens `/etc/shadow` or attempts to modify `/etc/sudoers`.
+**Context:** `ssh cks-worker1` (`node01`)  
+**Scenario:** On worker Droplet `cks-worker1` (`node01`), configure Falco to trigger a `WARNING` alert whenever any process inside a container opens `/etc/shadow` or attempts to modify `/etc/sudoers`.
 
 **Requirements:**
 1. Edit `/etc/falco/falco_rules.local.yaml`.
 2. Add a rule named `Sensitive File Modification in Container` with condition `open_write and container and (fd.name in (/etc/shadow, /etc/sudoers))`.
 3. Set priority to `WARNING`.
-4. Restart Falco via `systemctl restart falco` and verify status with `journalctl -u falco -e`.
+4. Restart Falco via `systemctl restart falco-modern-bpf` (or `systemctl restart falco`) and verify status with `journalctl -u falco-modern-bpf -e`.
 
 **Verification:**
 Spawn a container modifying `/etc/shadow` and verify alert output in `/var/log/syslog`.
 
 ---
 
-### Task 5: Mitigate Cloud Metadata Attack (SSRF Prevention) (Weight: 6%)
+### Task 5: Mitigate DigitalOcean / Cloud Metadata Attack (SSRF Prevention) (Weight: 6%)
 **Context:** `kubectl config use-context k8s-security`  
-**Scenario:** Prevent pods running in namespace `workloads` from accessing the cloud provider instance metadata service at `169.254.169.254/32`. All other egress traffic (including DNS and internal pods) must remain allowed.
+**Scenario:** Prevent pods running in namespace `workloads` from accessing the DigitalOcean Droplet / cloud provider instance metadata service at `169.254.169.254/32` (`http://169.254.169.254/metadata/v1.json`). All other egress traffic (including DNS and internal pods) must remain allowed.
 
 **Requirements:**
 Apply a NetworkPolicy in namespace `workloads`:
@@ -95,7 +95,7 @@ spec:
 ```
 
 **Verification:**
-Exec into any pod in `workloads` and test `curl --connect-timeout 2 http://169.254.169.254/latest/meta-data/`. The connection must time out.
+Exec into any pod in `workloads` and test `curl --connect-timeout 2 http://169.254.169.254/metadata/v1.json`. The connection must time out.
 
 ---
 
@@ -120,11 +120,11 @@ Create a secret `kubectl create secret generic test-sec --from-literal=k=v` and 
 ---
 
 ### Task 7: AppArmor Profile Enforcement (Weight: 6%)
-**Context:** `ssh node01`  
+**Context:** `ssh cks-worker1` (`node01`)  
 **Scenario:** A custom AppArmor profile `k8s-deny-write` is provided at `/etc/apparmor.d/k8s-deny-write`.
 
 **Requirements:**
-1. Load the profile on `node01`: `apparmor_parser -q /etc/apparmor.d/k8s-deny-write`.
+1. Load the profile on `cks-worker1` (`node01`): `apparmor_parser -q /etc/apparmor.d/k8s-deny-write`.
 2. Confirm active status: `aa-status | grep k8s-deny-write`.
 3. Create a Pod `secure-writer` in namespace `default` with image `busybox:1.36` configured with `securityContext.appArmorProfile.type: Localhost` and `localhostProfile: k8s-deny-write`.
 
@@ -135,7 +135,7 @@ Exec into `secure-writer` and attempt to write a file in `/`: `touch /test.txt`.
 
 ### Task 8: Seccomp Profile Implementation (Weight: 6%)
 **Context:** `kubectl config use-context k8s-security`  
-**Scenario:** A custom seccomp profile `fine-grained.json` is stored in `/var/lib/kubelet/seccomp/profiles/fine-grained.json` across all worker nodes.
+**Scenario:** A custom seccomp profile `fine-grained.json` is stored in `/var/lib/kubelet/seccomp/profiles/fine-grained.json` across all worker Droplets.
 
 **Requirements:**
 Configure the Deployment `secure-nginx` in namespace `web` to use this seccomp profile via `securityContext.seccompProfile.type: Localhost` with `localhostProfile: profiles/fine-grained.json`.
@@ -187,8 +187,8 @@ Attempt to launch a pod in `dev-team-a` without memory limits. The API server mu
 ---
 
 ### Task 12: Kubelet Port 10250 Authentication & Authorization (Weight: 6%)
-**Context:** `ssh node01`  
-**Scenario:** Harden worker node `node01`'s Kubelet configuration at `/var/lib/kubelet/config.yaml`.
+**Context:** `ssh cks-worker1` (`node01`)  
+**Scenario:** Harden worker Droplet `cks-worker1`'s Kubelet configuration at `/var/lib/kubelet/config.yaml`.
 
 **Requirements:**
 1. Disable anonymous authentication: `authentication.anonymous.enabled: false`.
@@ -197,7 +197,7 @@ Attempt to launch a pod in `dev-team-a` without memory limits. The API server mu
 4. Restart the kubelet service and ensure it reaches `active (running)`.
 
 **Verification:**
-From the control plane, attempt an unauthenticated curl to `https://<node01-ip>:10250/pods`. The server must return `Unauthorized`.
+From the control plane (`cks-cp1`), attempt an unauthenticated curl to `https://10.116.0.11:10250/pods`. The server must return `Unauthorized`.
 
 ---
 

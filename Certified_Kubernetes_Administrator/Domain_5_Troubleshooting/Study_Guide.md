@@ -1,7 +1,7 @@
 # Domain 5: Troubleshooting — In-Depth Master Study Guide
 
 **Exam Weight:** 30% of CKA (The single highest-weight domain on the exam!)  
-**Target Mastery:** Control plane static pod failures, API server / etcd crash loops, Worker node `NotReady` triage, kubelet & containerd systemd service debugging, Pod failure states (`CrashLoopBackOff`, `OOMKilled`, `CreateContainerConfigError`, `ImagePullBackOff`), CoreDNS failures, and Ephemeral debug containers (`kubectl debug`).
+**Target Mastery:** Control plane static pod failures, API server / etcd crash loops, Worker node `NotReady` triage, kubelet & containerd systemd service debugging, Pod failure states (`CrashLoopBackOff`, `OOMKilled`, `CreateContainerConfigError`, `ImagePullBackOff`), CoreDNS failures, Ephemeral debug containers (`kubectl debug`), and DigitalOcean Droplet dual-interface (`eth0` vs `eth1`) troubleshooting.
 
 ---
 
@@ -27,7 +27,7 @@ When `kubectl` commands fail with:
 `The connection to the server <ip>:6443 was refused - did you specify the right host or port?`
 
 ### Step 1: Verify the Control Plane Node & Kubelet
-SSH into the control plane node and verify the host daemon:
+SSH into the control plane node (`cka-cp1`) and verify the host daemon:
 ```bash
 sudo systemctl status kubelet
 # If inactive or failed:
@@ -73,7 +73,7 @@ When `kubectl get nodes` displays `NotReady`:
 
 ```bash
 # Step 1: Describe the node to inspect Conditions and System Alerts
-kubectl describe node worker-01
+kubectl describe node cka-worker1
 ```
 
 Look at the **Conditions** block:
@@ -108,6 +108,20 @@ ls -la /etc/cni/net.d/
 - If the node's client certificate expired or bootstrap token was revoked, kubelet logs: `x509: certificate has expired or is not yet valid`.
 - Fix: Regenerate or re-join using `kubeadm join`.
 
+### Step 4: DigitalOcean Droplet Dual-Interface (`eth0` vs `eth1`) & `--node-ip` Troubleshooting
+On DigitalOcean Droplets, `eth0` holds the public WAN IPv4 (plus an internal `10.x.x.x` anchor IP), while `eth1` holds the private DigitalOcean VPC IPv4 (`10.116.0.x/20`):
+- **Symptom 1: `kubectl logs` / `kubectl exec` fails with `dial tcp <public-ip>:10250: i/o timeout`:**
+  - **Cause:** `kubelet` registered the Droplet's public `eth0` IP as its `InternalIP`, and the DigitalOcean Cloud Firewall blocks port `10250` on the public interface (`eth0`).
+  - **Fix:** Bind `kubelet` to the private VPC IP on `eth1`:
+    ```bash
+    VPC_IP=$(ip -4 addr show eth1 | awk '/inet / {print $2}' | cut -d/ -f1)
+    echo "KUBELET_EXTRA_ARGS=--node-ip=${VPC_IP}" | sudo tee /etc/default/kubelet
+    sudo systemctl daemon-reload && sudo systemctl restart kubelet
+    ```
+- **Symptom 2: Cross-node Pod-to-Pod traffic times out on DigitalOcean Droplets:**
+  - **Cause:** Calico or Cilium bound VXLAN/BGP to `eth0` instead of `eth1`.
+  - **Fix:** Set `IP_AUTODETECTION_METHOD=interface=eth1` on the `calico-node` DaemonSet (`kubectl set env daemonset/calico-node -n kube-system IP_AUTODETECTION_METHOD=interface=eth1`) or `--set devices=eth1` in Cilium.
+
 ---
 
 ## 4. Pod Failure States & Process Exit Codes
@@ -131,7 +145,7 @@ flowchart TD
 | **1 / 255** | Application Error | Code exception, missing environment variable, syntax error. Check `kubectl logs <pod> --previous`. |
 | **126** | Command Cannot Execute | Container binary is not executable or lacks `chmod +x` permissions. |
 | **127** | Command Not Found | Executable command specified in `command:` or `args:` does not exist in `$PATH`. |
-| **137** | **`SIGKILL` / OOMKilled** | Container was killed by Linux OOM killer because it breached `resources.limits.memory`! Inspect with `kubectl describe pod <name> | grep -E "Reason|Exit Code"`. |
+| **137** | **`SIGKILL` / OOMKilled** | Container was killed by Linux OOM killer because it breached `resources.limits.memory`! Inspect with `kubectl describe pod <name> \| grep -E "Reason\|Exit Code"`. |
 | **139** | `SIGSEGV` | Segmentation fault in memory. |
 | **143** | `SIGTERM` | Graceful termination signal sent during pod eviction or deployment rollout. |
 
@@ -149,7 +163,7 @@ kubectl debug -it target-pod --image=nicolaka/netshoot --target=app-container
 kubectl debug crashed-pod -it --copy-to=debug-pod --container=app -- sh
 
 # Debug a broken node directly by mounting host root filesystem
-kubectl debug node/worker-01 -it --image=busybox
+kubectl debug node/cka-worker1 -it --image=busybox
 # Inside debug container:
 chroot /host
 ```
@@ -163,4 +177,4 @@ chroot /host
    - `port`: The port clients connect to on the Service ClusterIP.
    - `targetPort`: The port the application container actually listens on inside the Pod.
 3. **CoreDNS Loop Detection:**
-   - If host `/etc/resolv.conf` contains `nameserver 127.0.0.53` (systemd-resolved), CoreDNS forwarding can create a circular loop, crashing CoreDNS pods with `plugin/loop: Loop detected`.
+   - If host `/etc/resolv.conf` contains `nameserver 127.0.0.53` (systemd-resolved), CoreDNS forwarding can create a circular loop, crashing CoreDNS pods with `plugin/loop: Loop detected`. Ensure `resolvConf: /run/systemd/resolve/resolv.conf` is set in `/var/lib/kubelet/config.yaml`.

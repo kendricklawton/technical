@@ -1,7 +1,7 @@
 # Domain 4: Storage — In-Depth Master Study Guide
 
 **Exam Weight:** 10% of CKA  
-**Target Mastery:** PersistentVolumes (PV), PersistentVolumeClaims (PVC), StorageClasses, CSI Dynamic Provisioning, Access Modes (`RWO`, `ROX`, `RWX`, `RWOP`), Reclaim Policies (`Retain`, `Delete`), Online PVC Volume Expansion, Local Persistent Volumes with NodeAffinity, VolumeSnapshots, and VolumeMounts.
+**Target Mastery:** PersistentVolumes (PV), PersistentVolumeClaims (PVC), StorageClasses (`dobs.csi.digitalocean.com`, `rancher.io/local-path`, NFS), CSI Dynamic Provisioning, Access Modes (`RWO`, `ROX`, `RWX`, `RWOP`), Reclaim Policies (`Retain`, `Delete`), Online PVC Volume Expansion, Local Persistent Volumes with NodeAffinity on Droplets, VolumeSnapshots, and VolumeMounts.
 
 ---
 
@@ -11,17 +11,17 @@ Kubernetes decouples storage infrastructure configuration (managed by cluster ad
 
 ```mermaid
 flowchart LR
-    Admin["Cluster Admin / Cloud CSI"] -->|Provisions| StorageClass["StorageClass<br/>(e.g., gp3, local, nfs)"]
+    Admin["Cluster Admin / DigitalOcean CSI"] -->|Provisions| StorageClass["StorageClass<br/>(do-block-storage, local-path, nfs)"]
     StorageClass -->|Dynamic Provisioning| PV["PersistentVolume (PV)<br/>Cluster-Scoped"]
     Dev["Developer"] -->|Submits| PVC["PersistentVolumeClaim (PVC)<br/>Namespace-Scoped"]
     PVC -->|Binds 1-to-1| PV
-    Pod["Workload Pod"] -->|Mounts PVC| Container["Container Filesystem<br/>/var/lib/data"]
+    Pod["Workload Pod on Droplet"] -->|Mounts PVC| Container["Container Filesystem<br/>/var/lib/data"]
 ```
 
 ### The 4 Phases of the PV/PVC Lifecycle
 1. **Provisioning:**
-   - **Static Provisioning:** An administrator manually creates PersistentVolume objects pointing to physical SAN, NAS, AWS EBS, NFS, or local disk storage.
-   - **Dynamic Provisioning:** A PVC references a `StorageClass`. The Container Storage Interface (CSI) provisioner automatically provisions the backend volume and creates a matching PV.
+   - **Static Provisioning:** An administrator manually creates PersistentVolume objects pointing to attached DigitalOcean Block Storage Volumes (`/dev/disk/by-id/scsi-0DO_Volume_*`), NFS shares over the Droplet `eth1` VPC network, or local NVMe directories.
+   - **Dynamic Provisioning:** A PVC references a `StorageClass` (`dobs.csi.digitalocean.com` or `rancher.io/local-path`). The Container Storage Interface (CSI) provisioner automatically provisions the backend volume and creates a matching PV.
 2. **Binding:**
    - The master control-plane (`pv-controller`) watches for unbound PVCs and finds a matching PV by checking:
      - Storage capacity (PV capacity $\ge$ PVC requested capacity).
@@ -42,15 +42,15 @@ flowchart LR
 
 ### Access Modes Deep Dive
 
-| Access Mode | CLI Shorthand | Mount Capability | Typical Storage Backends |
+| Access Mode | CLI Shorthand | Mount Capability | DigitalOcean Droplet & Cloud Backends |
 |---|---|---|---|
-| **ReadWriteOnce** | `RWO` | Mounted as read-write by a **single node**. Multiple pods on the *same node* can access it simultaneously. | AWS EBS, Google Persistent Disk, Azure Managed Disk, iSCSI, Local NVMe. |
-| **ReadOnlyMany** | `ROX` | Mounted as read-only by **many nodes** simultaneously. | AWS EFS, NFS, CephFS, GlusterFS, Read-only S3 Mountpoint. |
-| **ReadWriteMany** | `RWX` | Mounted as read-write by **many nodes** simultaneously. | NFS, AWS EFS, Azure Files, GlusterFS, CephFS. |
-| **ReadWriteOncePod** | `RWOP` | Mounted as read-write by a **single Pod** across the entire cluster. | CSI drivers supporting `ReadWriteOncePod` (Kubernetes 1.27+ GA). |
+| **ReadWriteOnce** | `RWO` | Mounted as read-write by a **single node**. Multiple pods on the *same Droplet* can access it simultaneously. | DigitalOcean Block Storage Volumes (`dobs.csi.digitalocean.com`), `local-path` on Droplet NVMe, iSCSI. |
+| **ReadOnlyMany** | `ROX` | Mounted as read-only by **many nodes** simultaneously. | NFS Server over DO VPC `eth1`, CephFS, Read-only Object Storage mount. |
+| **ReadWriteMany** | `RWX` | Mounted as read-write by **many nodes** simultaneously. | NFSv4 Server over DO VPC (`10.116.0.10`), CephFS / Rook. |
+| **ReadWriteOncePod** | `RWOP` | Mounted as read-write by a **single Pod** across the entire cluster. | CSI drivers supporting `ReadWriteOncePod` (including `dobs.csi.digitalocean.com` on Kubernetes 1.27+ GA). |
 
 > [!WARNING]
-> **Exam Trap:** `ReadWriteOnce` means **Once per NODE**, not once per pod! Multiple pods scheduled on the *same* physical worker node can mount an `RWO` volume concurrently. If you require single-pod isolation across the entire cluster, use `ReadWriteOncePod`.
+> **Exam Trap:** `ReadWriteOnce` means **Once per NODE**, not once per pod! Multiple pods scheduled on the *same* physical worker Droplet can mount an `RWO` volume concurrently. If you require single-pod isolation across the entire cluster, use `ReadWriteOncePod`.
 
 ### PersistentVolume Reclaim Policies
 - **`Retain`:**
@@ -59,13 +59,13 @@ flowchart LR
   - The underlying physical data remains completely untouched.
   - Another PVC **cannot** immediately bind to this PV because `spec.claimRef` still contains the UID of the deleted claim. An administrator must manually scrub data or edit the PV to clear `claimRef`.
 - **`Delete` (Default for dynamically provisioned volumes):**
-  - When the PVC is deleted, the Kubernetes PV object AND the underlying cloud/hardware asset (e.g., AWS EBS volume) are deleted.
+  - When the PVC is deleted, the Kubernetes PV object AND the underlying DigitalOcean Block Storage Volume are deleted.
 - **`Recycle` (Deprecated):**
   - Performs an automated `rm -rf /volume/*` wipe and makes the PV available for rebinding.
 
 ---
 
-## 3. StorageClasses & CSI Dynamic Provisioning
+## 3. StorageClasses & CSI Dynamic Provisioning on DigitalOcean
 
 A `StorageClass` defines the "provisioner", volume parameters, and binding behavior.
 
@@ -73,31 +73,30 @@ A `StorageClass` defines the "provisioner", volume parameters, and binding behav
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: enterprise-gp3
-provisioner: ebs.csi.aws.com
+  name: do-block-storage
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: dobs.csi.digitalocean.com
 volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: true
 reclaimPolicy: Delete
 parameters:
-  type: gp3
-  iops: "5000"
-  throughput: "250"
-  encrypted: "true"
+  fstype: ext4
 ```
 
 ### `volumeBindingMode` Deep Dive
-- **`Immediate` (Default):**
+- **`Immediate` (Default if omitted):**
   - The CSI provisioner immediately creates the physical volume and Kubernetes PV as soon as the PVC is submitted.
-  - **The Multi-AZ Scheduling Disaster:** In cloud environments (e.g. AWS Multi-AZ), an EBS volume is created in Availability Zone `us-east-1a`. If the Pod using this PVC is later scheduled onto a node in `us-east-1b`, the pod gets stuck forever in `Pending` with error `VolumeZoneTopologyMismatch`!
+  - **The Topology / Region Scheduling Disaster:** When using node-local storage (`rancher.io/local-path`) or zonal cloud block storage (`dobs.csi.digitalocean.com`), `Immediate` binding selects a node/topology before knowing where the Pod will be scheduled. If the Pod has a `nodeSelector` or `nodeAffinity` for `cka-worker2` while the volume was created on `cka-worker1`, the pod gets stuck forever in `Pending` with error `VolumeNodeAffinityConflict`!
 - **`WaitForFirstConsumer` (Best Practice):**
-  - Delay PV provisioning and binding until a Pod referencing the PVC is scheduled.
-  - The scheduler evaluates node taints, affinities, and capacity *first*, selects a node in AZ `us-east-1b`, and then signals the CSI driver to provision the volume in that specific Availability Zone!
+  - Delays PV provisioning and binding until a Pod referencing the PVC is scheduled.
+  - The scheduler evaluates node taints, affinities, and capacity *first*, selects `cka-worker2`, and then signals the CSI driver / `local-path-provisioner` to provision and attach the volume on `cka-worker2`!
 
 ---
 
 ## 4. Online PVC Volume Expansion
 
-Kubernetes supports dynamic expansion of file systems without restarting workloads if the CSI driver and StorageClass support it.
+Kubernetes supports dynamic expansion of file systems (`dobs.csi.digitalocean.com` supports online `NodeExpandVolume` for `ext4` and `xfs`) without restarting workloads if the StorageClass has `allowVolumeExpansion: true`.
 
 ### Step-by-Step Volume Expansion Workflow:
 1. **Verify StorageClass allows expansion:**
@@ -108,30 +107,30 @@ Kubernetes supports dynamic expansion of file systems without restarting workloa
    ```
    *(Note: You can ONLY increase storage capacity; shrinking volumes is unsupported).*
 3. **Verify Status:**
-   - The PVC status shows `FileSystemResizePending` while the filesystem is expanding on the node.
+   - The PVC status shows `FileSystemResizePending` while the block device and `ext4`/`xfs` filesystem expand on the worker Droplet.
    - Once completed, `kubectl get pvc data-claim` reflects the new storage size (`50Gi`).
 
 ---
 
-## 5. Local Persistent Volumes & Node Affinity
+## 5. Local Persistent Volumes & Node Affinity on Droplets
 
-For ultra-low latency workloads (e.g. Cassandra, Elasticsearch, local Kafka brokers), Kubernetes supports **Local Persistent Volumes** backed by local SSD/NVMe drives.
+For ultra-low latency workloads (or when attaching a dedicated DigitalOcean Volume at `/mnt/volume_nyc3_01` on `cka-worker2`), Kubernetes supports **Local Persistent Volumes** backed by local NVMe or attached block storage.
 
 ```yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: local-nvme-pv
+  name: droplet-nvme-pv
 spec:
   capacity:
-    storage: 500Gi
+    storage: 20Gi
   volumeMode: Filesystem
   accessModes:
   - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
-    path: /mnt/disks/nvme0n1
+    path: /mnt/disks/nvme1
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -139,24 +138,24 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - worker-node-03
+          - cka-worker2
 ```
 
 > [!IMPORTANT]
-> A Local Persistent Volume **MUST** specify `nodeAffinity`. It binds storage to a physical machine so the Kubernetes scheduler only schedules consuming pods onto that exact host.
+> A Local Persistent Volume **MUST** specify `nodeAffinity`. It binds storage to a specific Droplet hostname (`cka-worker2`) so the Kubernetes scheduler only schedules consuming pods onto that exact host.
 
 ---
 
 ## 6. VolumeSnapshots & Snapshot Controllers
 
-The External Snapshotter CRDs (`snapshot.storage.k8s.io/v1`) allow point-in-time snapshotting and restoration.
+The External Snapshotter CRDs (`snapshot.storage.k8s.io/v1`) allow point-in-time snapshotting and restoration of CSI volumes (`dobs.csi.digitalocean.com`).
 
 ```yaml
 apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
-  name: csi-aws-snapclass
-driver: ebs.csi.aws.com
+  name: dobs-snapclass
+driver: dobs.csi.digitalocean.com
 deletionPolicy: Delete
 ---
 apiVersion: snapshot.storage.k8s.io/v1
@@ -165,7 +164,7 @@ metadata:
   name: postgres-backup-snap
   namespace: databases
 spec:
-  volumeSnapshotClassName: csi-aws-snapclass
+  volumeSnapshotClassName: dobs-snapclass
   source:
     persistentVolumeClaimName: postgres-data-pvc
 ---
@@ -176,7 +175,7 @@ metadata:
   name: postgres-restored-pvc
   namespace: databases
 spec:
-  storageClassName: enterprise-gp3
+  storageClassName: do-block-storage
   dataSource:
     name: postgres-backup-snap
     kind: VolumeSnapshot
@@ -194,10 +193,12 @@ spec:
 
 1. **PVC Stuck in `Pending`:**
    - Case A: StorageClass uses `volumeBindingMode: WaitForFirstConsumer`. This is NORMAL behavior until a pod referencing the PVC is created.
-   - Case B: No PV matches the PVC's requested size or AccessMode.
-   - Case C: CSI plugin pod is crashing or not running in `kube-system`.
+   - Case B: No PV matches the PVC's requested size, `storageClassName`, or `accessModes`.
+   - Case C: CSI plugin or `local-path-provisioner` pod is crashing or not running in `kube-system`/`local-path-storage`.
 2. **Releasing Retained PV for Reuse:**
    - When a PV has status `Released` under `Retain` policy:
      `kubectl patch pv <pv-name> -p '{"spec":{"claimRef": null}}'` clears the claim reference and returns the PV to `Available` status.
-3. **Volume Mount subPath Gotcha:**
+3. **NFS Mount Failure on Worker Droplets (`bad option; might need /sbin/mount.nfs`):**
+   - Ensure `nfs-common` is installed on every Ubuntu worker Droplet (`sudo apt-get install -y nfs-common`).
+4. **Volume Mount `subPath` Gotcha:**
    - Using `subPath` to mount a single file from a ConfigMap or Secret prevents automated live-updates when the ConfigMap changes!

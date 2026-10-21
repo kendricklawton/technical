@@ -6,16 +6,16 @@
 ---
 
 ### Question 1: `WaitForFirstConsumer` vs `Immediate` Volume Binding Mode
-A multi-AZ Kubernetes cluster spans `us-east-1a`, `us-east-1b`, and `us-east-1c`. An engineer creates a PVC backed by an AWS EBS CSI StorageClass configured with `volumeBindingMode: Immediate`. When a Pod is later created with a `nodeSelector` for `us-east-1c`, the Pod remains stuck in `Pending` with `VolumeNodeAffinityConflict`. Why?
-- A. AWS EBS volumes cannot be used in `us-east-1c`.
-- B. `Immediate` binding provisioned the EBS volume as soon as the PVC was created (selecting `us-east-1a` randomly) before knowing which AZ the Pod would be scheduled into; changing the StorageClass to `WaitForFirstConsumer` delays volume provisioning until the scheduler selects the target node.
+A Kubernetes cluster spans multiple DigitalOcean Droplets (`cka-worker1` and `cka-worker2`) and failure domains. An engineer creates a PVC backed by a local NVMe or regional block CSI StorageClass (`dobs.csi.digitalocean.com` / `rancher.io/local-path`) configured with `volumeBindingMode: Immediate`. When a Pod is later created with a `nodeSelector` for `cka-worker2`, the Pod remains stuck in `Pending` with `VolumeNodeAffinityConflict`. Why?
+- A. Block volumes cannot be used on `cka-worker2`.
+- B. `Immediate` binding provisioned/bound the volume as soon as the PVC was created (selecting `cka-worker1` / a different topology domain) before knowing which Droplet the Pod would be scheduled onto; changing the StorageClass to `WaitForFirstConsumer` delays volume provisioning until the scheduler selects the target node.
 - C. The PVC needs `ReadWriteMany`.
-- D. The CSI driver does not support multi-AZ clusters.
+- D. The CSI driver does not support multi-node clusters.
 
 ---
 
 ### Question 2: Setting a Default StorageClass
-A cluster currently has two StorageClasses: `standard` and `fast-nvme`. Neither is marked as default. What annotation marks `fast-nvme` as the cluster's default StorageClass?
+A cluster currently has two StorageClasses: `standard` and `do-block-storage-fast`. Neither is marked as default. What annotation marks `do-block-storage-fast` as the cluster's default StorageClass?
 - A. `storageclass.kubernetes.io/is-default-class: "true"`
 - B. `volume.beta.kubernetes.io/default-sc: "true"`
 - C. `csi.storage.k8s.io/default: "enabled"`
@@ -26,7 +26,7 @@ A cluster currently has two StorageClasses: `standard` and `fast-nvme`. Neither 
 ### Question 3: Online Volume Expansion (`allowVolumeExpansion: true`)
 A stateful workload is running out of disk space on its `20Gi` PVC. You edit the PVC and change `spec.resources.requests.storage` to `50Gi`. Which two requirements must be met for the volume to expand without pod downtime?
 - A. `persistentVolumeReclaimPolicy` must be `Delete` and `volumeMode` must be `Block`.
-- B. The StorageClass must have `allowVolumeExpansion: true` AND the underlying CSI driver must support `ExpandVolume` (including `NodeExpandVolume` for filesystem resize).
+- B. The StorageClass must have `allowVolumeExpansion: true` AND the underlying CSI driver (`dobs.csi.digitalocean.com`) must support `ExpandVolume` (including `NodeExpandVolume` for filesystem resize).
 - C. The PVC must be deleted and recreated.
 - D. The worker node must be cordoned and drained.
 
@@ -60,7 +60,7 @@ An engineer runs `kubectl delete pvc prod-db-pvc` while the `prod-db-0` Pod is s
 ---
 
 ### Question 7: CSI Architecture Components (`external-provisioner`, `external-attacher`, `node-driver-registrar`)
-In a standard Container Storage Interface (CSI) deployment, how are the controller plugin and node plugin typically deployed in Kubernetes?
+In a standard Container Storage Interface (CSI) deployment (such as `dobs.csi.digitalocean.com`), how are the controller plugin and node plugin typically deployed in Kubernetes?
 - A. Both run inside `kube-controller-manager`.
 - B. The CSI Controller plugin runs as a Deployment/StatefulSet (interacting with cloud APIs via sidecars like `csi-provisioner`, `csi-attacher`, `csi-resizer`), while the CSI Node plugin runs as a DaemonSet on every worker node (registering with kubelet via unix domain sockets and performing `NodeStageVolume` / `NodePublishVolume`).
 - C. Both must be compiled into the `kubelet` binary.
@@ -87,7 +87,7 @@ Once a `VolumeSnapshot` named `mysql-snap-2026` shows `readyToUse: true`, how do
 ---
 
 ### Question 10: Local PersistentVolumes (`local` volume type)
-Unlike `hostPath` volumes, what does a `local` PersistentVolume require in its specification to prevent the scheduler from scheduling pods onto the wrong worker node?
+Unlike `hostPath` volumes, what does a `local` PersistentVolume require in its specification to prevent the scheduler from scheduling pods onto the wrong worker Droplet?
 - A. `spec.nodeAffinity` defining the specific node (`kubernetes.io/hostname`) where the local disk resides, combined with a StorageClass using `volumeBindingMode: WaitForFirstConsumer`.
 - B. `persistentVolumeReclaimPolicy: Delete`
 - C. `accessModes: [ReadWriteMany]`
@@ -97,7 +97,7 @@ Unlike `hostPath` volumes, what does a `local` PersistentVolume require in its s
 
 ## Answer Key & Detailed Explanations
 
-1. **B** — `WaitForFirstConsumer` binds and provisions the volume only after the Pod scheduler evaluates Pod affinity, taints/tolerations, and `nodeSelector` constraints to choose an Availability Zone.
+1. **B** — `WaitForFirstConsumer` binds and provisions the volume only after the Pod scheduler evaluates Pod affinity, taints/tolerations, and `nodeSelector` constraints to choose a target node/topology.
 2. **A** — Adding annotation `storageclass.kubernetes.io/is-default-class: "true"` designates a StorageClass as default. Ensure only one StorageClass has this annotation set to `"true"`.
 3. **B** — Dynamic volume expansion requires `allowVolumeExpansion: true` on the StorageClass and CSI driver support for controller and node expansion operations.
 4. **A** — `FileSystemResizePending` indicates the cloud block storage size has increased, and the kubelet/CSI node plugin will expand the filesystem on the next mount or online once mounted.
