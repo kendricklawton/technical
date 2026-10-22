@@ -336,7 +336,7 @@ kubectl cluster-info --context kind-pe-lab
 
 Interviews are won with skills and stories, not certificates. Still, since you already hold or have studied for CKA and CKS, CNCF's platform engineering credentials are the natural next step, and this workspace covers most of their scope. Per [cncf.io](https://www.cncf.io/training/certification/cnpe/) (checked October 2026):
 
-- **CNPE — Certified Cloud Native Platform Engineer:** 120-minute performance-based exam (hands-on in a remote Linux desktop), $445 including one free retake.
+- **CNPE — Certified Cloud Native Platform Engineer:** 120-minute performance-based exam (hands-on in a remote Linux desktop), $445 including one free retake. See the dedicated [Certified Cloud Native Platform Engineer Track](../Certified_Cloud_Native_Platform_Engineer/README.md) for full hands-on labs, droplet guides, quizzes, and practice exams.
 - **CNPA — Certified Cloud Native Platform Engineering Associate:** multiple-choice exam, $250 including one free retake ([cncf.io/cnpa](https://www.cncf.io/training/certification/cnpa/)).
 
 | CNPE Domain (Weight) | Covered Here |
