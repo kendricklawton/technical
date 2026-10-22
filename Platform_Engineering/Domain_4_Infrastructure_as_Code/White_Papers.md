@@ -6,6 +6,9 @@
 
 ## 1. Authoritative Documentation & Frameworks
 
+### 1.0 [Terraform Infrastructure Engineer Professional (002) Master Workspace](../../Terraform_Infrastructure_Engineer_Professional/README.md)
+* **Exam Scope & Blueprint:** 7 full domains covering Terraform v1.15+, ephemeral variables, write-only arguments, `terraform test` unit/integration suites, OIDC dynamic provider credentials, and HCP Terraform governance. Includes 2 full 60-question practice exams.
+
 ### 1.1 [Terraform / OpenTofu Module Design & Best Practices](https://opentofu.org/docs/)
 * **Canonical Scope:** Writing composable, enterprise-ready infrastructure modules.
 * **Design Principles:**

@@ -19,6 +19,7 @@ For senior and staff engineers targeting high-leverage roles, deep systems diagn
 | **[Incident War Room Postmortems](Incident_War_Room_Postmortems.md)** | 5 comprehensive SEV-1 production incident post-mortems (Conntrack table exhaustion, etcd disk fsync starvation, CFS CPU quota throttling, DB thundering herd retry storms, BGP asymmetric routing) | Incident Command & Reliability |
 | **[Architecture Decision Records (ADRs)](Architecture_Decision_Records.md)** | 5 enterprise ADRs (Internal Developer Portal, Kubernetes Multi-Tenancy vCluster vs Mega-Clusters, Crossplane vs OpenTofu, Gateway API vs Istio vs Lattice, OpenTelemetry Tail-Based Sampling vs Direct Agent Ingestion) | Technical Strategy & Governance |
 | **[Staff Track (3-Year Career Plan)](Staff_Track/README.md)** | Multi-team scope, evidence log, staff drills, distributed systems reading list, and quarterly reviews | Leadership & Career |
+| **[Terraform Infrastructure Engineer Professional (002)](../Terraform_Infrastructure_Engineer_Professional/README.md)** | Complete 7-domain certification curriculum, 120 practice questions, and master cheat sheet for the Terraform 002 exam (IBM TechXchange 2026) | Infrastructure as Code |
 | **[Master Cheat Sheet](PE_Master_Cheat_Sheet.md)** | Consolidated quick-reference across all 10 domains, CLI commands, and architectural trade-offs | Rapid Review |
 
 ---
