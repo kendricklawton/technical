@@ -46,7 +46,7 @@ flowchart TD
   - [Domain 3: Observability & Operations (20%)](./Certified_Cloud_Native_Platform_Engineer/Domain_3_Observability_Operations/Study_Guide.md)
   - [Domain 4: Platform Architecture & Scalability (15%)](./Certified_Cloud_Native_Platform_Engineer/Domain_4_Platform_Architecture_Scalability/Study_Guide.md)
   - [Domain 5: Security, Governance & Policy Enforcement (15%)](./Certified_Cloud_Native_Platform_Engineer/Domain_5_Security_Governance_Policy/Study_Guide.md)
-  - [Full-Length Practice Exams 1, 2, 3](./Certified_Cloud_Native_Platform_Engineer/Practice_Exams/Practice_Exam_1.md)
+  - [Full-Length Practice Exams (5 Mock Exams)](./Certified_Cloud_Native_Platform_Engineer/Practice_Exams/README.md)
 
 ---
 
@@ -61,7 +61,7 @@ flowchart TD
   - [Domain 5: Security, Governance & Compliance](./Terraform_Infrastructure_Engineer_Professional/Domain_5_Security_Governance/Study_Guide.md)
   - [Domain 6: Advanced Modules & Testing Frameworks](./Terraform_Infrastructure_Engineer_Professional/Domain_6_Advanced_Modules_Testing/Study_Guide.md)
   - [Domain 7: HCP Terraform & Terraform Enterprise](./Terraform_Infrastructure_Engineer_Professional/Domain_7_HCP_Terraform_Enterprise/Study_Guide.md)
-  - [Full-Length Practice Exams 1, 2](./Terraform_Infrastructure_Engineer_Professional/Practice_Exams/Practice_Exam_1.md)
+  - [Full-Length Practice Exams (4 Mock Exams)](./Terraform_Infrastructure_Engineer_Professional/Practice_Exams/README.md)
 
 ---
 
@@ -69,29 +69,37 @@ flowchart TD
 - **Exam Profile:** 100% Performance-based CLI Exam (2 Hours).
 - **Core Coverage:** Cluster Architecture, Installation & Configuration, Workloads & Scheduling, Services & Networking, Storage, and Troubleshooting.
 - **Lab Infrastructure:** Fully integrated with DigitalOcean Droplets multi-node architecture (VPC private networking on `eth1`).
+- **Full-Length Practice Suite:** [5 Complete Performance Exams](./Certified_Kubernetes_Administrator/Practice_Exams/README.md) (85 real-world cluster tasks).
 
 ---
 
 ### 4. [Certified Kubernetes Security Specialist (CKS)](./Certified_Kubernetes_Security_Specialist/README.md)
 - **Exam Profile:** 100% Performance-based Security Hardening Exam (2 Hours).
-- **Core Coverage:** Cluster Setup (NetworkPolicies, CIS Benchmarks, etcd encryption), Cluster Hardening (RBAC, PSA/PSS), System Hardening (AppArmor, Seccomp), Supply Chain Security (Image vulnerability scanning, Cosign), Monitoring & Logging (Falco, audit logs).
+- **Core Coverage:** Cluster Setup (NetworkPolicies, CIS Benchmarks, etcd encryption), Cluster Hardening (RBAC, PSA/PSS), System Hardening (AppArmor, Seccomp), Supply Chain Security (Image vulnerability scanning, Cosign), Monitoring & Logging (Falco, audit logs, Tetragon eBPF).
 - **Lab Infrastructure:** Fully integrated with DigitalOcean Droplets multi-node architecture (`cks-cp1`, `cks-worker1`, `cks-worker2`).
+- **Full-Length Practice Suite:** [5 Complete Performance Exams](./Certified_Kubernetes_Security_Specialist/Practice_Exams/README.md) (80 real-world security tasks).
 
 ---
 
 ### 5. [Platform Engineering & Staff SRE Master Curriculum](./Platform_Engineering/README.md)
 - **Target Role:** Staff SRE / Staff Platform Engineer / Principal Cloud Architect.
 - **Core Coverage:** Internal Developer Platforms (Backstage, Port), Golden Paths, Multi-cluster Fleet Management, Service Meshes (Cilium, Istio), Advanced GitOps, FinOps, SLO/Error Budget Engineering.
+- **Staff Artifacts & War Rooms:**
+  - [Staff SRE Production Playbook](./Platform_Engineering/Staff_Track/Staff_SRE_Playbook.md)
+  - [Incident War Room Postmortems (7 SEV-1 Postmortems)](./Platform_Engineering/Incident_War_Room_Postmortems.md)
+  - [Enterprise Architecture Decision Records (7 ADRs)](./Platform_Engineering/Architecture_Decision_Records.md)
 
 ---
 
 ### 6. [AWS Certified Solutions Architect Professional (SAP-C02)](./AWS_Solutions_Architect_Professional/README.md)
 - **Exam Profile:** High-scale enterprise multi-account architectures, hybrid cloud, disaster recovery, migration strategies, and complex networking.
+- **Full-Length Practice Suite:** [6 Complete Scenario Practice Exams](./AWS_Solutions_Architect_Professional/Practice_Exams/README.md) (120 multi-paragraph scenario questions with full distractor analysis).
 
 ---
 
 ### 7. [AWS Certified DevOps Engineer Professional (DOP-C02)](./AWS_DevOps_Professional/README.md)
 - **Exam Profile:** SDLC automation, configuration management, infrastructure-as-code, monitoring and event management, policies and standards automation, incident and event response.
+- **Full-Length Practice Suite:** [6 Complete Scenario Practice Exams](./AWS_DevOps_Professional/Practice_Exams/Practice_Exam_1.md) (150 scenario questions).
 
 ---
 

@@ -169,3 +169,74 @@ The failure was caused by two classic anti-patterns:
 ### 3. Permanent Architectural Remediations
 1. **Enforce Appliance Mode via Infrastructure as Code:** Codify `appliance_mode_support = "enable"` in Terraform module definitions for all inspection VPC attachments.
 2. **BGP Community Standard:** Standardize on BGP Communities (`7224:7300` / `7224:7100`) rather than MED for deterministic route selection.
+
+---
+
+## Post-Mortem 6: eBPF BPF Map Saturation & Pod-to-Pod Packet Blackhole
+* **Severity:** SEV-1 (Internal Service Discovery & Mesh Failure)  
+* **Duration:** 36 Minutes  
+* **Impact:** 45% of inter-pod RPC calls failing with `connect: connection timed out` across 60 worker nodes; automated payment processing halted.
+
+### 1. Architectural Topology
+- 150-node Kubernetes cluster utilizing Cilium eBPF v1.15 in kube-proxy replacement mode.
+- High-churn microservice architecture deploying 4,000+ ephemeral batch pods per hour.
+- Default Cilium BPF conntrack table size: 524,288 entries (`bpf-ct-global-any-max: 524288`).
+
+### 2. Timeline of Events
+- **09:14 UTC:** A distributed data pipeline batch run initiates 12,000 parallel short-lived TCP connection requests to cache endpoints.
+- **09:18 UTC:** Core payment service reports p99 internal gRPC latency climbing from 4 ms to 15,000 ms. Inter-service HTTP requests fail with connection timeouts.
+- **09:22 UTC:** On-call SRE paged for `PodCommunicationDegraded`. Initial check of node CPU and RAM shows all nodes below 45% utilization.
+- **09:27 UTC:** SRE runs `cilium status` on an affected node:
+  ```text
+  BPF Maps:       bpf_ct_global_any: 524288/524288 (100% full) [ERROR]
+  BPF Errors:     Map full, dropping packets
+  ```
+- **09:31 UTC (Immediate Mitigation):** SRE dynamically flushes closed/stale TCP connections and expands the BPF conntrack map limit live:
+  ```bash
+  cilium-dbg bpf ct flush
+  helm upgrade cilium cilium/cilium -n kube-system --reuse-values --set bpf.ctGlobalAnyMax=2097152
+  ```
+- **09:38 UTC:** BPF map usage drops to 24%. Internal RPC packet drops cease immediately; services recover.
+
+### 3. Permanent Architectural Remediations
+1. **Dynamic BPF Map Auto-Sizing:** Reconfigure Cilium to scale BPF maps dynamically based on total node memory (`bpf.mapDynamicSizeRatio: 0.005`).
+2. **Aggressive TCP Conntrack GC Tuning:** Reduce `bpf-ct-timeout-regular-tcp` from 24h to 6h and set `bpf-ct-timeout-service-close` to 10 seconds.
+3. **Proactive Alerting:** Deploy a Prometheus alerting rule firing at 75% BPF map capacity:
+   `cilium_bpf_map_pressure{map_name="cilium_ct_any"} > 0.75`.
+
+---
+
+## Post-Mortem 7: Mutating Admission Webhook Deadlock & Cluster Lockout
+* **Severity:** SEV-1 (Total Control Plane Deployment Freeze)  
+* **Duration:** 52 Minutes  
+* **Impact:** All rolling deployments, pod autoscaling (HPA), and administrative pod creations blocked across entire production cluster with HTTP 500 Internal Server Error.
+
+### 1. Architectural Topology
+- Multi-tenant Kubernetes cluster running Kyverno and custom mutating admission webhooks.
+- Webhook configuration applied with `failurePolicy: Fail` and `timeoutSeconds: 10`.
+- Webhook pod running inside namespace `security-system` on the same worker nodes as application workloads.
+
+### 2. Timeline of Events
+- **11:00 UTC:** Routine Kubernetes node OS security patching initiates a rolling node drain.
+- **11:04 UTC:** The node hosting all 3 replicas of the custom webhook pod is drained. Due to missing `podAntiAffinity`, all webhook pods were collocated on that single node.
+- **11:06 UTC:** The webhook pods transition to `Pending` because remaining nodes lack capacity.
+- **11:08 UTC:** Application HPA triggers scale-out requests. Kubernetes API server intercepts pod creation requests, attempts to contact the admission webhook at `https://webhook.security-system.svc:443`, and times out after 10 seconds.
+- **11:10 UTC:** Because `failurePolicy: Fail` was configured without namespace exclusion, the API server rejects ALL pod creation requests cluster-wide—including the webhook pods trying to schedule!
+- **11:18 UTC:** SRE attempts to deploy an emergency recovery pod; `kubectl run` fails with `Internal error occurred: failed calling webhook`.
+- **11:24 UTC (Immediate Mitigation):** SRE uses emergency administrative privileges to delete the `MutatingWebhookConfiguration`:
+  ```bash
+  kubectl delete mutatingwebhookconfiguration enterprise-security-webhook
+  ```
+- **11:28 UTC:** API server immediately unblocks pod admissions. Webhook pods schedule and start running.
+
+### 3. Permanent Architectural Remediations
+1. **Exclude Critical System Namespaces:** Update all admission webhook configurations with explicit namespace selectors:
+   ```yaml
+   namespaceSelector:
+     matchExpressions:
+       - key: kubernetes.io/metadata.name
+         operator: NotIn
+         values: ["kube-system", "kube-node-lease", "security-system"]
+   ```
+2. **Mandatory Pod Anti-Affinity & PDB:** Require all admission controllers to run at least 3 replicas across separate Availability Zones with a `PodDisruptionBudget` (`minAvailable: 2`).
+3. **Audit FailurePolicy:** Switch non-blocking security checks to `failurePolicy: Ignore` and enforce compliance through asynchronous background audit scans.

@@ -32,6 +32,8 @@ Welcome to the CKA Practice Exam Simulation Hub. These three full-length, 120-mi
 | **[Practice Exam 1: Core Cluster Operations & Recovery](Practice_Exam_1.md)** | Control-plane static pod recovery, `kubeadm` v1.30 $\to$ v1.31 upgrade, `etcd` backup/restore, Gateway API `HTTPRoute`, RWO/RWX PVCs, and Node `NotReady` triage | 17 Tasks | 120 mins | $\ge 80 / 100$ |
 | **[Practice Exam 2: Advanced Scheduling, Networking & Multi-Node Triage](Practice_Exam_2.md)** | Zero-downtime node drain, native sidecar containers (`restartPolicy: Always`), NetworkPolicy egress/ingress lockdown, CSI online volume expansion, and `kube-controller-manager` recovery | 17 Tasks | 120 mins | $\ge 80 / 100$ |
 | **[Practice Exam 3: Chaos Simulation & High-Pressure Troubleshooting](Practice_Exam_3.md)** | Expired control-plane PKI certs, `etcd` database space quota alarm, CoreDNS loop resolution, Gateway API canary traffic splitting (`90/10`), and `ip_forward` / CNI repair | 17 Tasks | 120 mins | $\ge 80 / 100$ |
+| **[Practice Exam 4: DigitalOcean Multi-Node Droplet Administration](Practice_Exam_4.md)** | Kubelet TLS bootstrap CSRs, Cilium eth1 private VPC routing, containerd systemd cgroup, PV reclaim Retain recovery, and IPVS proxy migration | 17 Tasks | 120 mins | $\ge 80 / 100$ |
+| **[Practice Exam 5: Disaster Recovery & Deep Control Plane Triage](Practice_Exam_5.md)** | Cluster-wide certificate renewal, raw etcd DB restore on fresh disk, Ingress TLS termination, PriorityClass preemption, and Metrics Server repair | 17 Tasks | 120 mins | $\ge 80 / 100$ |
 
 ---
 

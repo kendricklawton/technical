@@ -33,6 +33,8 @@ Welcome to the CKS Practice Exam Simulation Hub. These three full-length, 120-mi
 | **[Practice Exam 1: Control-Plane Hardening, Encryption & Runtime Defense](Practice_Exam_1.md)** | CIS `kube-bench` fixes, AppArmor enforcement, `etcd` `aescbc` encryption, `ImagePolicyWebhook`, Audit Policy configuration, Falco shell detection, and `trivy` CVE pod eviction | 16 Tasks | 120 mins | $\ge 80 / 100$ |
 | **[Practice Exam 2: Zero-Trust Networking, Sandboxing & Supply Chain Security](Practice_Exam_2.md)** | Pod Security Standards (`restricted`), gVisor `RuntimeClass`, Cosign signature verification, SPDX SBOM generation, Tetragon eBPF `Sigkill` enforcement, and Istio `STRICT` mTLS | 16 Tasks | 120 mins | $\ge 80 / 100$ |
 | **[Practice Exam 3: Live Breach Forensics, Policy-as-Code & Host Lockdown](Practice_Exam_3.md)** | Compromised container `/proc/<pid>/exe` forensics, OPA Gatekeeper & CEL `ValidatingAdmissionPolicy`, custom Seccomp profiles, `ufw` & kernel module blacklisting, and RBAC privilege de-escalation | 16 Tasks | 120 mins | $\ge 80 / 100$ |
+| **[Practice Exam 4: Droplet VPC Threat Detection & Kernel Isolation](Practice_Exam_4.md)** | Falco interactive shell alerts, AppArmor deny-write profiles, Seccomp chmod/chown filtering, gVisor sandboxing, etcd encryption key rotation, and Ingress mTLS | 16 Tasks | 120 mins | $\ge 80 / 100$ |
+| **[Practice Exam 5: Advanced Supply Chain Integrity & eBPF Policy Enforcement](Practice_Exam_5.md)** | Falco /etc/shadow alerts, Tetragon Sigkill tracing, Cosign SBOM verification, Cilium FQDN egress, Distroless container hardening, and RBAC aggregation | 16 Tasks | 120 mins | $\ge 80 / 100$ |
 
 ---
 

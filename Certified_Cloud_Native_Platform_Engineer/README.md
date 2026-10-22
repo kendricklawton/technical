@@ -45,7 +45,9 @@ This certification validates senior and staff-level expertise in architecting, a
 
 - **Master Cheat Sheet:** [CNPE_Master_Cheat_Sheet.md](CNPE_Master_Cheat_Sheet.md)
 - **DigitalOcean Droplet Lab Provisioning Guide:** [DigitalOcean_Droplet_Lab_Guide.md](DigitalOcean_Droplet_Lab_Guide.md) *(Automated `doctl` + Kubeadm + Argo CD + Crossplane + Kyverno + OTel installation)*
-- **Performance Practice Exams:**
+- **Performance Practice Exams:** [Practice Exams Hub](Practice_Exams/README.md)
   - [Practice Exam 1 (2-Hour Performance Simulation)](Practice_Exams/Practice_Exam_1.md)
   - [Practice Exam 2 (2-Hour Performance Simulation)](Practice_Exams/Practice_Exam_2.md)
   - [Practice Exam 3 (2-Hour Performance Simulation)](Practice_Exams/Practice_Exam_3.md)
+  - [Practice Exam 4 (2-Hour Performance Simulation)](Practice_Exams/Practice_Exam_4.md)
+  - [Practice Exam 5 (2-Hour Performance Simulation)](Practice_Exams/Practice_Exam_5.md)

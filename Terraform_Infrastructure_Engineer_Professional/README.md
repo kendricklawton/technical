@@ -38,6 +38,8 @@ This certification validates senior and staff-level expertise in architecting, a
 ## 3. High-Value Reference Materials
 
 - **Master Cheat Sheet:** [Terraform_Master_Cheat_Sheet.md](Terraform_Master_Cheat_Sheet.md)
-- **Practice Exams:**
-  - [Practice Exam 1 (Full 60 Questions)](Practice_Exams/Practice_Exam_1.md)
-  - [Practice Exam 2 (Full 60 Questions)](Practice_Exams/Practice_Exam_2.md)
+- **Practice Exams:** [Practice Exams Hub](Practice_Exams/README.md)
+  - [Practice Exam 1](Practice_Exams/Practice_Exam_1.md)
+  - [Practice Exam 2](Practice_Exams/Practice_Exam_2.md)
+  - [Practice Exam 3](Practice_Exams/Practice_Exam_3.md)
+  - [Practice Exam 4](Practice_Exams/Practice_Exam_4.md)
