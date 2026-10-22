@@ -1,4 +1,4 @@
-# Engineering
+# Technical
 
 Welcome to the comprehensive, production-grade repository for mastering Staff SRE, Cloud Native Platform Engineering, Advanced Cloud Certifications, and Multi-Disciplinary Technical Leadership. 
 
@@ -10,7 +10,7 @@ While built with terminal-first rigor, real-world failure mode simulations, arch
 
 ```mermaid
 flowchart TD
-    Hub["Engineering"]
+    Hub["Technical"]
     
     subgraph CloudInfra["Cloud Infrastructure & Architecture"]
         AWS_SA["AWS Solutions Architect Professional (SAP-C02)"]
