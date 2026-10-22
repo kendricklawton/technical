@@ -75,6 +75,32 @@ A collection of technical concepts, hands-on lab architectures, certifications, 
 
 ---
 
+### 8. [Google Cloud Certified: Professional Cloud DevOps Engineer](./GCP_Professional_Cloud_DevOps_Engineer/README.md)
+- **Profile:** Applying SRE principles, multi-window burn rate alerts, progressive delivery (Cloud Deploy, Skaffold), Cloud Build caching, MQL observability, incident management, blameless postmortems, and software supply chain security (Binary Authorization, Workload Identity Federation).
+- **Key Resources:**
+  - [GCP DevOps Master Cheat Sheet](./GCP_Professional_Cloud_DevOps_Engineer/GCP_DevOps_Master_Cheat_Sheet.md)
+  - [Domain 1: SRE Principles & Service Reliability](./GCP_Professional_Cloud_DevOps_Engineer/Domain_1_SRE_Principles_Service_Reliability/Study_Guide.md)
+  - [Domain 2: CI/CD Pipelines & Deployment Strategies](./GCP_Professional_Cloud_DevOps_Engineer/Domain_2_CICD_Pipelines_Deployment_Strategies/Study_Guide.md)
+  - [Domain 3: Service Monitoring & Observability](./GCP_Professional_Cloud_DevOps_Engineer/Domain_3_Service_Monitoring_Observability/Study_Guide.md)
+  - [Domain 4: Incident Management & Postmortems](./GCP_Professional_Cloud_DevOps_Engineer/Domain_4_Incident_Management_Postmortems/Study_Guide.md)
+  - [Domain 5: Security, Governance & SRE Operations](./GCP_Professional_Cloud_DevOps_Engineer/Domain_5_Security_Governance_SRE_Operations/Study_Guide.md)
+  - [Full-Length Practice Exams Suite (3 Scenario Exams)](./GCP_Professional_Cloud_DevOps_Engineer/Practice_Exams/README.md)
+
+---
+
+### 9. [Google Cloud Certified: Professional Cloud Architect (PCA)](./GCP_Professional_Cloud_Architect/README.md)
+- **Profile:** Enterprise cloud solution architecture, compute and database selection, Shared VPC networking, hybrid connectivity (Dedicated Interconnect, HA VPN), security perimeters (VPC-SC, BeyondCorp, CMEK/EKM), FinOps, and the 4 official case studies (EHR Healthcare, Cymbal Direct, Mountkirk Games, TerramEarth).
+- **Key Resources:**
+  - [GCP PCA Master Cheat Sheet](./GCP_Professional_Cloud_Architect/GCP_PCA_Master_Cheat_Sheet.md)
+  - [Domain 1: Designing & Planning Cloud Architecture](./GCP_Professional_Cloud_Architect/Domain_1_Design_Planning_Cloud_Architecture/Study_Guide.md)
+  - [Domain 2: Provisioning Infrastructure & Networking](./GCP_Professional_Cloud_Architect/Domain_2_Provisioning_Infrastructure_Networking/Study_Guide.md)
+  - [Domain 3: Security, Compliance & Identity](./GCP_Professional_Cloud_Architect/Domain_3_Security_Compliance_Identity/Study_Guide.md)
+  - [Domain 4: Analyzing & Optimizing Processes](./GCP_Professional_Cloud_Architect/Domain_4_Analyzing_Optimizing_Processes/Study_Guide.md)
+  - [Domain 5: Reliability, Operations & Official Case Studies](./GCP_Professional_Cloud_Architect/Domain_5_Reliability_Operations_Case_Studies/Study_Guide.md)
+  - [Full-Length Practice Exams Suite (3 Scenario Exams)](./GCP_Professional_Cloud_Architect/Practice_Exams/README.md)
+
+---
+
 ## Multi-Disciplinary & Non-Technical Foundations
 
 Staff and Principal leadership requires driving impact beyond pure code and infrastructure. This section outlines the non-technical foundations integrated throughout this workspace:
