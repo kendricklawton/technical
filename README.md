@@ -1,8 +1,6 @@
 # Technical
 
-Welcome to the production-grade repository for mastering Staff SRE, Cloud Native Platform Engineering, Advanced Cloud Certifications, and Strategic Technical Leadership. 
-
-This repository bridges deep systems engineering with the non-technical, strategic, behavioral, and organizational disciplines required to operate at Staff, Principal, and executive leadership levels.
+A collection of technical concepts, hands-on lab architectures, certifications, and engineering references.
 
 ---
 
