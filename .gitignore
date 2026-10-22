@@ -1,0 +1,193 @@
+# ==============================================================================
+# Git Ignore Configuration: Technical / Platform Engineering & Cloud Certifications
+# Workspaces: AWS, Kubernetes (CKA/CKS), Terraform Professional, Staff Platform Eng
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. AI Agents, LLM Tooling & Workspace Metadata
+# ------------------------------------------------------------------------------
+.gemini/skills/
+.agents/skills/
+.gemini/
+.agents/
+.cursor/
+.anthropic/
+.claude/
+.aider*
+.continue/
+*.chat
+*.prompt
+
+# ------------------------------------------------------------------------------
+# 2. Operating System & Editor Files
+# ------------------------------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editors & IDEs (VS Code, JetBrains, Vim, Emacs)
+.idea/
+*.iml
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.swp
+*.swo
+*.swn
+.*.sw[a-p]
+*#
+.#*
+
+# ------------------------------------------------------------------------------
+# 3. Security, Secrets, Private Keys & Environment Variables
+# ------------------------------------------------------------------------------
+*.env
+*.env.*
+!.env.example
+*.pem
+*.key
+*.pkcs12
+*.pfx
+*.crt
+*.csr
+*id_rsa*
+*id_ed25519*
+*id_ecdsa*
+*.secret
+*.secrets
+secrets.yaml
+secrets.json
+credentials.json
+*_credentials
+*vault-token*
+*.kubeconfig
+kubeconfig
+kubeconfig-*
+
+# ------------------------------------------------------------------------------
+# 4. Terraform & OpenTofu
+# ------------------------------------------------------------------------------
+# Local hidden execution directories
+**/.terraform/*
+**/.terraform/
+.terraform/
+
+# State files & backups
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Plan execution files & crash dumps
+*.tfplan
+*.tfplan.binary
+crash.log
+crash.*.log
+
+# Sensitive variable files
+*.tfvars
+*.tfvars.json
+!example.tfvars
+!example.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Local overrides
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration and credentials file
+.terraformrc
+terraform.rc
+
+# ------------------------------------------------------------------------------
+# 5. Kubernetes, Helm & Container Tooling
+# ------------------------------------------------------------------------------
+# etcd snapshot dumps & database restores
+*.db
+*.db.bak
+etcd-snapshot*.db
+etcd-restored/
+
+# Local diagnostic & benchmark dumps
+/var/log/kubernetes/
+/etc/kubernetes/manifests/*.bak
+/opt/candidate/
+tampered-binaries.txt
+
+# Helm package archives & local chart dependencies
+*.tgz
+charts/*.tgz
+.helm/
+
+# ------------------------------------------------------------------------------
+# 6. Python, Automation & Testing Tooling
+# ------------------------------------------------------------------------------
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution & packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Unit testing & test coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# ------------------------------------------------------------------------------
+# 7. Go / Golang Binaries & Builds
+# ------------------------------------------------------------------------------
+bin/
+/bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# ------------------------------------------------------------------------------
+# 8. Temporary Files & Local Scratch Directories
+# ------------------------------------------------------------------------------
+tmp/
+temp/
+scratch/
+*.tmp
+*.temp
+*.bak
+*.orig
+*.log
