@@ -93,7 +93,7 @@ gcloud logging metrics create http_500_count \
 ```yaml
 steps:
   # 1. Run unit tests
-  - name: 'golang:1.22'
+  - name: 'golang:1.27-alpine'
     entrypoint: 'go'
     args: ['test', '-v', './...']
 
