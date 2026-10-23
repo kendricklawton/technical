@@ -52,30 +52,19 @@ A collection of technical concepts, hands-on lab architectures, certifications, 
 
 ---
 
-### 5. [Platform Engineering & Staff SRE Track](./Platform_Engineering/README.md)
-- **Target Role:** Staff SRE / Staff Platform Engineer / Principal Cloud Architect.
-- **Core Coverage:** Internal Developer Platforms (Backstage, Port), Golden Paths, Multi-cluster Fleet Management, Service Meshes (Cilium, Istio), Advanced GitOps, FinOps, SLO Engineering.
-- **Staff Artifacts & War Rooms:**
-  - [Staff SRE Production Playbook](./Platform_Engineering/Staff_Track/Staff_SRE_Playbook.md)
-  - [Incident War Room Postmortems (7 SEV-1 Outages Analyzed)](./Platform_Engineering/Incident_War_Room_Postmortems.md)
-  - [Enterprise Architecture Decision Records (7 Production ADRs)](./Platform_Engineering/Architecture_Decision_Records.md)
-  - [Staff Career Track & Evidence Log](./Platform_Engineering/Staff_Track/README.md)
-
----
-
-### 6. [AWS Certified Solutions Architect Professional (SAP-C02)](./AWS_Solutions_Architect_Professional/README.md)
+### 5. [AWS Certified Solutions Architect Professional (SAP-C02)](./AWS_Solutions_Architect_Professional/README.md)
 - **Profile:** Multi-account architectures, hybrid cloud, disaster recovery, migration strategies, and complex networking.
 - **Practice Suite:** [6 Complete Scenario Practice Exams](./AWS_Solutions_Architect_Professional/Practice_Exams/README.md) (120 multi-paragraph scenario questions with full distractor analysis).
 
 ---
 
-### 7. [AWS Certified DevOps Engineer Professional (DOP-C02)](./AWS_DevOps_Professional/README.md)
+### 6. [AWS Certified DevOps Engineer Professional (DOP-C02)](./AWS_DevOps_Professional/README.md)
 - **Profile:** SDLC automation, configuration management, infrastructure-as-code, monitoring, policies automation, incident response.
 - **Practice Suite:** [6 Complete Scenario Practice Exams](./AWS_DevOps_Professional/Practice_Exams/Practice_Exam_1.md) (150 scenario questions).
 
 ---
 
-### 8. [Google Cloud Certified: Professional Cloud DevOps Engineer](./GCP_Professional_Cloud_DevOps_Engineer/README.md)
+### 7. [Google Cloud Certified: Professional Cloud DevOps Engineer](./GCP_Professional_Cloud_DevOps_Engineer/README.md)
 - **Profile:** Applying SRE principles, multi-window burn rate alerts, progressive delivery (Cloud Deploy, Skaffold), Cloud Build caching, MQL observability, incident management, blameless postmortems, and software supply chain security (Binary Authorization, Workload Identity Federation).
 - **Key Resources:**
   - [GCP DevOps Master Cheat Sheet](./GCP_Professional_Cloud_DevOps_Engineer/GCP_DevOps_Master_Cheat_Sheet.md)
@@ -88,7 +77,7 @@ A collection of technical concepts, hands-on lab architectures, certifications, 
 
 ---
 
-### 9. [Google Cloud Certified: Professional Cloud Architect (PCA)](./GCP_Professional_Cloud_Architect/README.md)
+### 8. [Google Cloud Certified: Professional Cloud Architect (PCA)](./GCP_Professional_Cloud_Architect/README.md)
 - **Profile:** Enterprise cloud solution architecture, compute and database selection, Shared VPC networking, hybrid connectivity (Dedicated Interconnect, HA VPN), security perimeters (VPC-SC, BeyondCorp, CMEK/EKM), FinOps, and the 4 official case studies (EHR Healthcare, Cymbal Direct, Mountkirk Games, TerramEarth).
 - **Key Resources:**
   - [GCP PCA Master Cheat Sheet](./GCP_Professional_Cloud_Architect/GCP_PCA_Master_Cheat_Sheet.md)
@@ -98,23 +87,6 @@ A collection of technical concepts, hands-on lab architectures, certifications, 
   - [Domain 4: Analyzing & Optimizing Processes](./GCP_Professional_Cloud_Architect/Domain_4_Analyzing_Optimizing_Processes/Study_Guide.md)
   - [Domain 5: Reliability, Operations & Official Case Studies](./GCP_Professional_Cloud_Architect/Domain_5_Reliability_Operations_Case_Studies/Study_Guide.md)
   - [Full-Length Practice Exams Suite (3 Scenario Exams)](./GCP_Professional_Cloud_Architect/Practice_Exams/README.md)
-
----
-
-## Multi-Disciplinary & Non-Technical Foundations
-
-Staff and Principal leadership requires driving impact beyond pure code and infrastructure. This section outlines the non-technical foundations integrated throughout this workspace:
-
-1. **Executive Communication & Influence Without Authority:** Writing clear Architecture Decision Records (ADRs) and RFCs, communicating business impact to leadership, and leading blameless postmortems.
-   - *References:* [Staff SRE Playbook](./Platform_Engineering/Staff_Track/Staff_SRE_Playbook.md) | [Incident War Rooms](./Platform_Engineering/Incident_War_Room_Postmortems.md) | [Domain 10 Study Guide](./Platform_Engineering/Domain_10_Behavioral_Career/Study_Guide.md)
-2. **Business Acumen & Cloud FinOps:** Connecting latency and reliability to business revenue, designing cost allocation models, and optimizing unit economics.
-   - *Reference:* [FinOps & Governance](./Platform_Engineering/Domain_7_Security_Governance_FinOps/Study_Guide.md)
-3. **Organizational Design & Team Topologies:** Applying Conway's law, managing team cognitive load, and building self-service internal developer platforms.
-   - *Reference:* [Platform Foundations & IDP](./Platform_Engineering/Domain_1_Platform_Foundations_IDP/Study_Guide.md)
-4. **Decision Science & Risk Modeling:** Evaluating reversible vs. irreversible decisions (Type 1 vs. Type 2), modeling second-order effects, and managing statistical error budgets.
-   - *Reference:* [Architecture Decision Records](./Platform_Engineering/Architecture_Decision_Records.md)
-5. **Behavioral Dynamics & Career Strategy:** Structuring communication with the STAR method, managing upward alignment, and accumulating verifiable impact evidence.
-   - *References:* [Staff Evidence Log](./Platform_Engineering/Staff_Track/README.md) | [Mock Interview Protocol](./Platform_Engineering/Mock_Interviews/Interviewer_Protocol.md)
 
 ---
 
