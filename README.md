@@ -116,6 +116,22 @@ A collection of technical concepts, hands-on lab architectures, certifications, 
 
 ---
 
+### 11. [HashiCorp Certified: Terraform Associate (004)](./Terraform_Associate/README.md)
+- **Profile:** Foundational and operational mastery of Infrastructure as Code with **Terraform 1.12+**, HCL2 configuration, custom condition validations (`precondition`, `postcondition`, `check` blocks), ephemeral values & write-only arguments (`ephemeral` blocks, `*_wo` attributes), declarative state refactoring (`moved`, `removed`, `import` blocks with `-generate-config-out`), S3 native state locking (`use_lockfile = true`), and **HCP Terraform** (Projects, Variable Sets, Dynamic Provider Credentials, Sentinel/OPA, and Health Assessments).
+- **Key Resources:**
+  - [Terraform Associate (004) Master Cheat Sheet](./Terraform_Associate/Terraform_Associate_004_Master_Cheat_Sheet.md)
+  - [Domain 1: Infrastructure as Code (IaC) with Terraform (`1a`–`1c`)](./Terraform_Associate/Domain_1_IaC_with_Terraform/Study_Guide.md)
+  - [Domain 2: Terraform Fundamentals (`2a`–`2d`)](./Terraform_Associate/Domain_2_Terraform_Fundamentals/Study_Guide.md)
+  - [Domain 3: Core Terraform Workflow (`3a`–`3g`)](./Terraform_Associate/Domain_3_Core_Terraform_Workflow/Study_Guide.md)
+  - [Domain 4: Terraform Configuration (`4a`–`4h`)](./Terraform_Associate/Domain_4_Terraform_Configuration/Study_Guide.md)
+  - [Domain 5: Terraform Modules (`5a`–`5d`)](./Terraform_Associate/Domain_5_Terraform_Modules/Study_Guide.md)
+  - [Domain 6: Terraform State Management (`6a`–`6d`)](./Terraform_Associate/Domain_6_Terraform_State_Management/Study_Guide.md)
+  - [Domain 7: Maintain Infrastructure with Terraform (`7a`–`7c`)](./Terraform_Associate/Domain_7_Maintain_Infrastructure/Study_Guide.md)
+  - [Domain 8: HCP Terraform (`8a`–`8d`)](./Terraform_Associate/Domain_8_HCP_Terraform/Study_Guide.md)
+  - [Comprehensive Practice Exams Suite (4 Mock Exams, 132 Practice Questions)](./Terraform_Associate/Practice_Exams/README.md)
+
+---
+
 ## Lab Architecture & Operational Standards
 
 - **Zero-Trust Baseline:** Default-deny network policies, mutual TLS encryption, ephemeral credentials, and least-privilege RBAC.
