@@ -22,17 +22,18 @@ A collection of technical concepts, hands-on lab architectures, certifications, 
 ---
 
 ### 2. [Terraform Infrastructure Engineer Professional (002)](./Terraform_Infrastructure_Engineer_Professional/README.md)
-- **Profile:** Scenario exam launching at IBM TechXchange 2026 in Atlanta.
+- **Profile:** Staff/Principal-level scenario exam validating enterprise Infrastructure-as-Code architecture, state lifecycle engineering, native `.tftest.hcl` mock testing, zero-state secrets (`ephemeral` & `_wo` attributes), Terraform Stacks, and HCP Terraform / Terraform Enterprise (FDO) Active-Active administration.
 - **Key Resources:**
   - [Terraform Master Cheat Sheet](./Terraform_Infrastructure_Engineer_Professional/Terraform_Master_Cheat_Sheet.md)
-  - [Domain 1: Scalable Configuration Design](./Terraform_Infrastructure_Engineer_Professional/Domain_1_Scalable_Configuration_Design/Study_Guide.md)
-  - [Domain 2: State & Backend Operations](./Terraform_Infrastructure_Engineer_Professional/Domain_2_State_Backend_Operations/Study_Guide.md)
-  - [Domain 3: Lifecycle Operations](./Terraform_Infrastructure_Engineer_Professional/Domain_3_Lifecycle_Operations/Study_Guide.md)
-  - [Domain 4: CI/CD & Automation Workflows](./Terraform_Infrastructure_Engineer_Professional/Domain_4_CICD_Automation_Workflows/Study_Guide.md)
-  - [Domain 5: Security, Governance & Compliance](./Terraform_Infrastructure_Engineer_Professional/Domain_5_Security_Governance/Study_Guide.md)
-  - [Domain 6: Advanced Modules & Testing Frameworks](./Terraform_Infrastructure_Engineer_Professional/Domain_6_Advanced_Modules_Testing/Study_Guide.md)
-  - [Domain 7: HCP Terraform & Terraform Enterprise](./Terraform_Infrastructure_Engineer_Professional/Domain_7_HCP_Terraform_Enterprise/Study_Guide.md)
-  - [Full-Length Practice Exams Suite (4 Comprehensive Exams)](./Terraform_Infrastructure_Engineer_Professional/Practice_Exams/README.md)
+  - [Domain 1: Scalable Configuration Design (20%)](./Terraform_Infrastructure_Engineer_Professional/Domain_1_Scalable_Configuration_Design/Study_Guide.md)
+  - [Domain 2: State & Backend Operations (18%)](./Terraform_Infrastructure_Engineer_Professional/Domain_2_State_Backend_Operations/Study_Guide.md)
+  - [Domain 3: Lifecycle Operations & Declarative Refactoring (16%)](./Terraform_Infrastructure_Engineer_Professional/Domain_3_Lifecycle_Operations/Study_Guide.md)
+  - [Domain 4: CI/CD & Automation Workflows (14%)](./Terraform_Infrastructure_Engineer_Professional/Domain_4_CICD_Automation_Workflows/Study_Guide.md)
+  - [Domain 5: Security, Governance & Policy-as-Code (12%)](./Terraform_Infrastructure_Engineer_Professional/Domain_5_Security_Governance/Study_Guide.md)
+  - [Domain 6: Advanced Modules & Native Testing Frameworks (10%)](./Terraform_Infrastructure_Engineer_Professional/Domain_6_Advanced_Modules_Testing/Study_Guide.md)
+  - [Domain 7: HCP Terraform & Terraform Enterprise Administration (10%)](./Terraform_Infrastructure_Engineer_Professional/Domain_7_HCP_Terraform_Enterprise/Study_Guide.md)
+  - [Full-Length Practice Exams Suite (4 Comprehensive Mock Exams)](./Terraform_Infrastructure_Engineer_Professional/Practice_Exams/README.md)
+  - **Question Bank:** **369 scenario questions** (21 domain quizzes + 4 full-length practice exams with complete distractor analyses).
 
 ---
 
@@ -53,14 +54,30 @@ A collection of technical concepts, hands-on lab architectures, certifications, 
 ---
 
 ### 5. [AWS Certified Solutions Architect Professional (SAP-C02)](./AWS_Solutions_Architect_Professional/README.md)
-- **Profile:** Multi-account architectures, hybrid cloud, disaster recovery, migration strategies, and complex networking.
-- **Practice Suite:** [6 Complete Scenario Practice Exams](./AWS_Solutions_Architect_Professional/Practice_Exams/README.md) (120 multi-paragraph scenario questions with full distractor analysis).
+- **Profile:** Multi-account AWS Organizations architectures, hybrid cloud connectivity (Direct Connect, Transit Gateway, Cloud WAN), disaster recovery strategies (RTO/RPO), migration frameworks (7 Rs, MGN, DMS), and complex enterprise networking.
+- **Key Resources:**
+  - [SAP-C02 Master Cheat Sheet](./AWS_Solutions_Architect_Professional/SAP_C02_Master_Cheat_Sheet.md)
+  - [Domain 1: Design Solutions for Organizational Complexity (26%)](./AWS_Solutions_Architect_Professional/Domain_1_Organizational_Complexity/Study_Guide.md)
+  - [Domain 2: Design for New Solutions (29%)](./AWS_Solutions_Architect_Professional/Domain_2_Design_New_Solutions/Study_Guide.md)
+  - [Domain 3: Continuous Improvement for Existing Solutions (25%)](./AWS_Solutions_Architect_Professional/Domain_3_Continuous_Improvement/Study_Guide.md)
+  - [Domain 4: Accelerate Workload Migration and Modernization (20%)](./AWS_Solutions_Architect_Professional/Domain_4_Migration_Modernization/Study_Guide.md)
+  - [Full-Length Practice Exams Suite (6 Mock Exams)](./AWS_Solutions_Architect_Professional/Practice_Exams/README.md)
+  - **Question Bank:** **264 scenario questions** (144 domain quiz questions across 10 quizzes + 120 practice exam questions).
 
 ---
 
 ### 6. [AWS Certified DevOps Engineer Professional (DOP-C02)](./AWS_DevOps_Professional/README.md)
-- **Profile:** SDLC automation, configuration management, infrastructure-as-code, monitoring, policies automation, incident response.
-- **Practice Suite:** [6 Complete Scenario Practice Exams](./AWS_DevOps_Professional/Practice_Exams/Practice_Exam_1.md) (150 scenario questions).
+- **Profile:** Enterprise SDLC automation, GitOps & CI/CD pipelines (CodePipeline V2, CodeBuild, CodeDeploy), configuration drift management, resilient multi-region architectures, CloudWatch/X-Ray observability, event-driven incident forensics, and automated compliance governance.
+- **Key Resources:**
+  - [DOP-C02 Master Cheat Sheet & Exam Battle Guide](./AWS_DevOps_Professional/DOP_C02_Master_Cheat_Sheet.md)
+  - [Domain 1: SDLC Automation (22%)](./AWS_DevOps_Professional/Domain_1_SDLC_Automation/Study_Guide.md)
+  - [Domain 2: Configuration Management & IaC (17%)](./AWS_DevOps_Professional/Domain_2_Configuration_Management_IaC/Study_Guide.md)
+  - [Domain 3: Resilient Cloud Solutions (15%)](./AWS_DevOps_Professional/Domain_3_Resilient_Cloud_Solutions/Study_Guide.md)
+  - [Domain 4: Monitoring and Logging (15%)](./AWS_DevOps_Professional/Domain_4_Monitoring_Logging/Study_Guide.md)
+  - [Domain 5: Incident and Event Response (14%)](./AWS_DevOps_Professional/Domain_5_Incident_Event_Response/Study_Guide.md)
+  - [Domain 6: Security and Compliance (17%)](./AWS_DevOps_Professional/Domain_6_Security_Compliance/Study_Guide.md)
+  - [Advanced Practice Exams Suite & Calibration Set](./AWS_DevOps_Professional/Practice_Exams/README.md)
+  - **Question Bank:** **815 scenario questions** (36 domain quizzes [720 questions] + 6 advanced mock exams [95 questions]).
 
 ---
 
@@ -68,12 +85,13 @@ A collection of technical concepts, hands-on lab architectures, certifications, 
 - **Profile:** Applying SRE principles, multi-window burn rate alerts, progressive delivery (Cloud Deploy, Skaffold), Cloud Build caching, MQL observability, incident management, blameless postmortems, and software supply chain security (Binary Authorization, Workload Identity Federation).
 - **Key Resources:**
   - [GCP DevOps Master Cheat Sheet](./GCP_Professional_Cloud_DevOps_Engineer/GCP_DevOps_Master_Cheat_Sheet.md)
-  - [Domain 1: SRE Principles & Service Reliability](./GCP_Professional_Cloud_DevOps_Engineer/Domain_1_SRE_Principles_Service_Reliability/Study_Guide.md)
-  - [Domain 2: CI/CD Pipelines & Deployment Strategies](./GCP_Professional_Cloud_DevOps_Engineer/Domain_2_CICD_Pipelines_Deployment_Strategies/Study_Guide.md)
-  - [Domain 3: Service Monitoring & Observability](./GCP_Professional_Cloud_DevOps_Engineer/Domain_3_Service_Monitoring_Observability/Study_Guide.md)
-  - [Domain 4: Incident Management & Postmortems](./GCP_Professional_Cloud_DevOps_Engineer/Domain_4_Incident_Management_Postmortems/Study_Guide.md)
-  - [Domain 5: Security, Governance & SRE Operations](./GCP_Professional_Cloud_DevOps_Engineer/Domain_5_Security_Governance_SRE_Operations/Study_Guide.md)
+  - [Domain 1: SRE Principles & Service Reliability (22%)](./GCP_Professional_Cloud_DevOps_Engineer/Domain_1_SRE_Principles_Service_Reliability/Study_Guide.md)
+  - [Domain 2: CI/CD Pipelines & Deployment Strategies (25%)](./GCP_Professional_Cloud_DevOps_Engineer/Domain_2_CICD_Pipelines_Deployment_Strategies/Study_Guide.md)
+  - [Domain 3: Service Monitoring & Observability (20%)](./GCP_Professional_Cloud_DevOps_Engineer/Domain_3_Service_Monitoring_Observability/Study_Guide.md)
+  - [Domain 4: Incident Management & Postmortems (18%)](./GCP_Professional_Cloud_DevOps_Engineer/Domain_4_Incident_Management_Postmortems/Study_Guide.md)
+  - [Domain 5: Security, Governance & SRE Operations (15%)](./GCP_Professional_Cloud_DevOps_Engineer/Domain_5_Security_Governance_SRE_Operations/Study_Guide.md)
   - [Full-Length Practice Exams Suite (3 Scenario Exams)](./GCP_Professional_Cloud_DevOps_Engineer/Practice_Exams/README.md)
+  - **Question Bank:** **195 scenario questions** (150 domain quiz questions across 15 quizzes + 45 full practice exam questions).
 
 ---
 
@@ -81,12 +99,13 @@ A collection of technical concepts, hands-on lab architectures, certifications, 
 - **Profile:** Enterprise cloud solution architecture, compute and database selection, Shared VPC networking, hybrid connectivity (Dedicated Interconnect, HA VPN), security perimeters (VPC-SC, BeyondCorp, CMEK/EKM), FinOps, and the 4 official case studies (EHR Healthcare, Cymbal Direct, Mountkirk Games, TerramEarth).
 - **Key Resources:**
   - [GCP PCA Master Cheat Sheet](./GCP_Professional_Cloud_Architect/GCP_PCA_Master_Cheat_Sheet.md)
-  - [Domain 1: Designing & Planning Cloud Architecture](./GCP_Professional_Cloud_Architect/Domain_1_Design_Planning_Cloud_Architecture/Study_Guide.md)
-  - [Domain 2: Provisioning Infrastructure & Networking](./GCP_Professional_Cloud_Architect/Domain_2_Provisioning_Infrastructure_Networking/Study_Guide.md)
-  - [Domain 3: Security, Compliance & Identity](./GCP_Professional_Cloud_Architect/Domain_3_Security_Compliance_Identity/Study_Guide.md)
-  - [Domain 4: Analyzing & Optimizing Processes](./GCP_Professional_Cloud_Architect/Domain_4_Analyzing_Optimizing_Processes/Study_Guide.md)
-  - [Domain 5: Reliability, Operations & Official Case Studies](./GCP_Professional_Cloud_Architect/Domain_5_Reliability_Operations_Case_Studies/Study_Guide.md)
+  - [Domain 1: Designing & Planning Cloud Architecture (~24%)](./GCP_Professional_Cloud_Architect/Domain_1_Design_Planning_Cloud_Architecture/Study_Guide.md)
+  - [Domain 2: Provisioning Infrastructure & Networking (~15%)](./GCP_Professional_Cloud_Architect/Domain_2_Provisioning_Infrastructure_Networking/Study_Guide.md)
+  - [Domain 3: Security, Compliance & Identity (~21%)](./GCP_Professional_Cloud_Architect/Domain_3_Security_Compliance_Identity/Study_Guide.md)
+  - [Domain 4: Analyzing & Optimizing Processes (~19%)](./GCP_Professional_Cloud_Architect/Domain_4_Analyzing_Optimizing_Processes/Study_Guide.md)
+  - [Domain 5: Reliability, Operations & Official Case Studies (~21%)](./GCP_Professional_Cloud_Architect/Domain_5_Reliability_Operations_Case_Studies/Study_Guide.md)
   - [Full-Length Practice Exams Suite (3 Scenario Exams)](./GCP_Professional_Cloud_Architect/Practice_Exams/README.md)
+  - **Question Bank:** **195 scenario questions** (150 domain quiz questions across 15 quizzes + 45 full practice exam questions).
 
 ---
 
