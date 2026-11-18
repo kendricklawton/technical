@@ -151,6 +151,20 @@ A collection of technical concepts, hands-on lab architectures, certifications, 
 
 ---
 
+### 12. [AWS Certified Generative AI Developer – Professional (AIP-C01)](./AWS_Generative_AI_Developer_Professional/README.md)
+- **Profile:** Enterprise Generative AI architecture and engineering — foundation model customization (Fine-Tuning, Continued Pre-Training, Model Distillation, Custom Model Import), multimodal RAG pipelines (Bedrock Data Automation, hierarchical/semantic chunking, OpenSearch Serverless, Aurora `pgvector`, S3 Vectors, MemoryDB, Neptune Analytics GraphRAG, Hybrid Search + Reranking), Multi-Agent Collaboration & Model Context Protocol (MCP), Bedrock Guardrails (Contextual Grounding, Automated Reasoning, `ApplyGuardrail`), Prompt Caching (`cachePoint`), Cross-Region Inference, and LLM-as-a-Judge evaluation pipelines.
+- **Key Resources:**
+  - [AIP-C01 Master Cheat Sheet](./AWS_Generative_AI_Developer_Professional/AIP_C01_Master_Cheat_Sheet.md)
+  - [Domain 1: Foundation Model Integration, Data Management, and Compliance (31%)](./AWS_Generative_AI_Developer_Professional/Domain_1_FM_Integration_Data_Management_Compliance/Study_Guide.md)
+  - [Domain 2: Implementation and Integration (26%)](./AWS_Generative_AI_Developer_Professional/Domain_2_Implementation_Integration/Study_Guide.md)
+  - [Domain 3: AI Safety, Security, and Governance (20%)](./AWS_Generative_AI_Developer_Professional/Domain_3_AI_Safety_Security_Governance/Study_Guide.md)
+  - [Domain 4: Operational Efficiency and Optimization for GenAI Applications (12%)](./AWS_Generative_AI_Developer_Professional/Domain_4_Operational_Efficiency_Optimization/Study_Guide.md)
+  - [Domain 5: Testing, Validation, and Troubleshooting (11%)](./AWS_Generative_AI_Developer_Professional/Domain_5_Testing_Validation_Troubleshooting/Study_Guide.md)
+  - [Full-Length Practice Exams Suite (3 Mock Exams, 75 Practice Questions)](./AWS_Generative_AI_Developer_Professional/Practice_Exams/README.md)
+  - **Question Bank:** **300 scenario questions** (225 domain quiz questions across 15 quizzes + 75 full-length practice exam questions with complete distractor analyses).
+
+---
+
 ## Lab Architecture & Operational Standards
 
 - **Zero-Trust Baseline:** Default-deny network policies, mutual TLS encryption, ephemeral credentials, and least-privilege RBAC.
